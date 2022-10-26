@@ -1,0 +1,12 @@
+@import "../variables.scss";
+
+.header {
+    position: sticky;
+    top: 0;
+    background-color: $base-color;
+    padding: 1rem 2rem;
+}
+
+.content {
+    position: relative;
+}

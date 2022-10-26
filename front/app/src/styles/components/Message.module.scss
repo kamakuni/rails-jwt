@@ -1,0 +1,27 @@
+.danger {
+    background: f14668;
+    color: rgb(255, 255, 255);
+    border-radius: .2rem;
+    padding: .2rem 1rem;
+}
+
+.success {
+    background: #48c78e;
+    color: rgb(255, 255, 255);
+    border-radius: .2rem;
+    padding: .2rem 1rem;
+}
+
+.info {
+    background: #3e8ed0;
+    color: rgb(255, 255, 255);
+    border-radius: .2rem;
+    padding: .2rem 1rem;
+}
+
+.warn {
+    background: #ffe08a;
+    color: rgba(0, 0, 0, .7);
+    border-radius: .2rem;
+    padding: .2rem 1rem;
+}
