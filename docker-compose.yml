@@ -28,6 +28,12 @@ services:
       - ./tmp/redis:/data
     command: redis-server --appendonly yes
 
+  auth:
+    tty: true
+    build:
+      context: ./auth/
+      dockerfile: Dockerfile
+
   api:
     tty: true
     depends_on:
