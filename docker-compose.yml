@@ -33,6 +33,10 @@ services:
     build:
       context: ./auth/
       dockerfile: Dockerfile
+    ports:
+      - 4080:8080
+    volumes:
+      - ./auth/app:/app
 
   api:
     tty: true
