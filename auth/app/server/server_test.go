@@ -1,6 +1,8 @@
 package server
 
 import (
+	"bytes"
+	"encoding/json"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -27,8 +29,18 @@ func TestNewAuthServer(t *testing.T) {
 	}
 }
 
+type User struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
 func TestAuth(t *testing.T) {
-	res, err := http.Post("http://localhost:8080/api/v1/auth", "application/json", nil)
+	user := &User{
+		Email:    "test@example.com",
+		Password: "password",
+	}
+	userJson, _ := json.Marshal(user)
+	res, err := http.Post("http://localhost:8080/api/v1/auth", "application/json", bytes.NewBuffer(userJson))
 	if err != nil {
 		t.Error(err)
 	}
