@@ -48,7 +48,7 @@ func TestAuth(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	expected := "auth token"
+	expected := "{\"token\":\"auth token\"}"
 	if string(body) != expected {
 		t.Errorf("response is not '%v'. actual:%v\n", expected, string(body))
 	}

@@ -8,6 +8,10 @@ import (
 	"strconv"
 )
 
+type ResponseToken struct {
+	Token string `json:"token"`
+}
+
 func NewAuthServer(addr string) *http.Server {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/v1/auth", func(w http.ResponseWriter, r *http.Request) {
@@ -46,8 +50,15 @@ func NewAuthServer(addr string) *http.Server {
 			return
 		}
 		fmt.Printf("%v\n", jsonBody)
+		bytes, err := json.Marshal(&ResponseToken{
+			Token: "auth token",
+		})
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
 		w.WriteHeader(http.StatusOK)
-		io.WriteString(w, "auth token")
+		io.WriteString(w, string(bytes))
 		return
 	})
 	mux.HandleFunc("/api/v1/refresh", func(w http.ResponseWriter, r *http.Request) {
