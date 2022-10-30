@@ -6,13 +6,25 @@ import (
 	"io"
 	"net/http"
 	"strconv"
+	"time"
+
+	"github.com/golang-jwt/jwt/v4"
 )
 
 type ResponseToken struct {
 	Token string `json:"token"`
 }
 
-func NewAuthServer(addr string) *http.Server {
+func CreateToken(userId string, now time.Time, secret string) (string, error) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"sub": "123456789",
+		"exp": now.Add(10 * time.Minute).Unix(),
+		"iat": now.Unix(),
+	})
+	return token.SignedString([]byte(secret))
+}
+
+func NewAuthServer(addr string, secret string) *http.Server {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/v1/auth", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
@@ -50,8 +62,9 @@ func NewAuthServer(addr string) *http.Server {
 			return
 		}
 		fmt.Printf("%v\n", jsonBody)
+		token, err := CreateToken("", time.Now(), secret)
 		bytes, err := json.Marshal(&ResponseToken{
-			Token: "auth token",
+			Token: token,
 		})
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
