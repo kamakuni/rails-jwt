@@ -13,7 +13,8 @@ import (
 var s *http.Server
 
 func TestMain(m *testing.M) {
-	s = NewAuthServer(":8080", "secret")
+	secret, _ := ReadSecret("../certs/private.key")
+	s = NewAuthServer(":8080", secret)
 	go func() {
 		log.Fatal(s.ListenAndServe())
 	}()

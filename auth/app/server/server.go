@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 
@@ -22,6 +23,19 @@ func CreateToken(userId string, now time.Time, secret string) (string, error) {
 		"iat": now.Unix(),
 	})
 	return token.SignedString([]byte(secret))
+}
+
+func ReadSecret(path string) (string, error) {
+	f, err := os.Open(path)
+	if err != nil {
+		return "", err
+	}
+	data := make([]byte, 0124)
+	count, err := f.Read(data)
+	if err != nil {
+		return "", err
+	}
+	return string(data[:count]), nil
 }
 
 func NewAuthServer(addr string, secret string) *http.Server {
