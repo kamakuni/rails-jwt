@@ -13,16 +13,21 @@ import (
 )
 
 type ResponseToken struct {
-	Token string `json:"token"`
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
 }
 
-func CreateToken(userId string, now time.Time, secret string) (string, error) {
+func CreateAccessToken(userId string, now time.Time, secret string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub": "123456789",
 		"exp": now.Add(10 * time.Minute).Unix(),
 		"iat": now.Unix(),
 	})
 	return token.SignedString([]byte(secret))
+}
+
+func CreateRefreshToken() (string, error) {
+	return "", nil
 }
 
 func ReadSecret(path string) (string, error) {
@@ -76,9 +81,10 @@ func NewAuthServer(addr string, secret string) *http.Server {
 			return
 		}
 		fmt.Printf("%v\n", jsonBody)
-		token, err := CreateToken("", time.Now(), secret)
+		accessToken, err := CreateAccessToken("", time.Now(), secret)
 		bytes, err := json.Marshal(&ResponseToken{
-			Token: token,
+			AccessToken:  accessToken,
+			RefreshToken: "",
 		})
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
