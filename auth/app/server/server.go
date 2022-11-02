@@ -12,7 +12,7 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-type ResponseToken struct {
+type Response struct {
 	AccessToken  string `json:"access_token"`
 	RefreshToken string `json:"refresh_token"`
 }
@@ -45,7 +45,7 @@ func ReadSecret(path string) (string, error) {
 
 func NewAuthServer(addr string, secret string) *http.Server {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/api/v1/auth", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/api/v1/token", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			w.WriteHeader(http.StatusMethodNotAllowed)
 			return
@@ -82,9 +82,10 @@ func NewAuthServer(addr string, secret string) *http.Server {
 		}
 		fmt.Printf("%v\n", jsonBody)
 		accessToken, err := CreateAccessToken("", time.Now(), secret)
-		bytes, err := json.Marshal(&ResponseToken{
+		refreshToken, err := CreateRefreshToken()
+		bytes, err := json.Marshal(&Response{
 			AccessToken:  accessToken,
-			RefreshToken: "",
+			RefreshToken: refreshToken,
 		})
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
