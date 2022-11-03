@@ -27,10 +27,11 @@ func CreateAccessToken(userId string, now time.Time, secret string) (string, err
 }
 
 func CreateRefreshToken() (string, error) {
-	uuid, err := NewUUID(); err != nil {
-		return "", err
+	uuid, err := NewUUID()
+	if err != nil {
+		return "", nil
 	}
-	return string(uuid), nil
+	return uuid.String(), nil
 }
 
 func ReadSecret(path string) (string, error) {
