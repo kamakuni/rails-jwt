@@ -28,6 +28,15 @@ services:
       - ./tmp/redis:/data
     command: redis-server --appendonly yes
 
+  auth-db:
+    build:
+      context: ./db/
+      dockerfile: Dockerfile
+    volumes:
+      - ./tmp/auth_db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: password
+
   auth:
     tty: true
     build:
