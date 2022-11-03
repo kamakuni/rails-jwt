@@ -35,13 +35,13 @@ type User struct {
 	Password string `json:"password"`
 }
 
-func TestAuth(t *testing.T) {
+func TestToken(t *testing.T) {
 	user := &User{
 		Email:    "test@example.com",
 		Password: "password",
 	}
 	userJson, _ := json.Marshal(user)
-	res, err := http.Post("http://localhost:8080/api/v1/auth", "application/json", bytes.NewBuffer(userJson))
+	res, err := http.Post("http://localhost:8080/api/v1/token", "application/json", bytes.NewBuffer(userJson))
 	if err != nil {
 		t.Error(err)
 	}
@@ -49,9 +49,15 @@ func TestAuth(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	expected := "{\"token\":\"auth token\"}"
-	if string(body) != expected {
-		t.Errorf("response is not '%v'. actual:%v\n", expected, string(body))
+	var responseJson Response
+	if err := json.Unmarshal(body, &responseJson); err != nil {
+		t.Error(err)
+	}
+	if responseJson.AccessToken == "" {
+		t.Errorf("response has no AccessToken.")
+	}
+	if responseJson.RefreshToken == "" {
+		t.Errorf("response has no RefreshToken.")
 	}
 }
 
