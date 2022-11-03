@@ -27,6 +27,7 @@ func CreateAccessToken(userId string, now time.Time, secret string) (string, err
 }
 
 func CreateRefreshToken() (string, error) {
+
 	return "", nil
 }
 
