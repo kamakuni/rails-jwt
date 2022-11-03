@@ -1,4 +1,4 @@
-package server
+package main
 
 import (
 	"encoding/json"
@@ -27,7 +27,7 @@ func CreateAccessToken(userId string, now time.Time, secret string) (string, err
 }
 
 func CreateRefreshToken() (string, error) {
-	if uuid, err := NewUUID(); err != nil {
+	uuid, err := NewUUID(); err != nil {
 		return "", err
 	}
 	return string(uuid), nil
