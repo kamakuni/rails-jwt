@@ -1,4 +1,4 @@
-module auth
+module github.com/kamakuni/rails-jwt/auth/app
 
 go 1.19
 

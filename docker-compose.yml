@@ -39,6 +39,8 @@ services:
 
   auth:
     tty: true
+    depends_on:
+      - auth-db
     build:
       context: ./auth/
       dockerfile: Dockerfile
