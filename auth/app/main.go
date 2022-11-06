@@ -28,6 +28,8 @@ var client *ent.Client
 
 func main() {
 	client = Open("postgres://postgres:password@auth-db/postgres?sslmode=disable")
+	defer client.Close()
+
 	http.HandleFunc("/api/v1/auth", func(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, "auth token")
 	})

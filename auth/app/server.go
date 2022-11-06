@@ -9,8 +9,14 @@ import (
 	"strconv"
 	"time"
 
+	"entgo.io/ent/entc/integration/multischema/ent"
 	"github.com/golang-jwt/jwt/v4"
 )
+
+type Server struct {
+	*http.Server
+	client *ent.Client
+}
 
 type Response struct {
 	AccessToken  string `json:"access_token"`
@@ -47,7 +53,7 @@ func ReadSecret(path string) (string, error) {
 	return string(data[:count]), nil
 }
 
-func NewAuthServer(addr string, secret string) *http.Server {
+func NewAuthServer(client *ent.Client, addr string, secret string) *Server {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/v1/token", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
@@ -102,9 +108,12 @@ func NewAuthServer(addr string, secret string) *http.Server {
 	mux.HandleFunc("/api/v1/refresh", func(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, "refresh token")
 	})
-	s := &http.Server{
-		Addr:    addr,
-		Handler: mux,
+	s := &Server{
+		Server: &http.Server{
+			Addr:    addr,
+			Handler: mux,
+		},
+		client: client,
 	}
 	return s
 }

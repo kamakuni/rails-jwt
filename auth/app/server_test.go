@@ -10,11 +10,12 @@ import (
 	"testing"
 )
 
-var s *http.Server
+var s *Server
 
 func TestMain(m *testing.M) {
+	client := Open("postgres://postgres:password@auth-db/postgres?sslmode=disable")
 	secret, _ := ReadSecret("../certs/private.key")
-	s = NewAuthServer(":8080", secret)
+	s = NewAuthServer(client, ":8080", secret)
 	go func() {
 		log.Fatal(s.ListenAndServe())
 	}()
