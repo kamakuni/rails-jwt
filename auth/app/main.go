@@ -1,15 +1,16 @@
 package main
 
 import (
+	"context"
 	"database/sql"
-	"io"
 	"log"
-	"net/http"
+	"os"
 
 	"entgo.io/ent/dialect"
 	entsql "entgo.io/ent/dialect/sql"
 	"entgo.io/ent/entc/integration/multischema/ent"
 	_ "github.com/jackc/pgx/v5/stdlib"
+	"github.com/kamakuni/rails-jwt/auth/app/server"
 )
 
 // Open new connection
@@ -29,11 +30,11 @@ var client *ent.Client
 func main() {
 	client = Open("postgres://postgres:password@auth-db/postgres?sslmode=disable")
 	defer client.Close()
-
-	http.HandleFunc("/api/v1/auth", func(w http.ResponseWriter, r *http.Request) {
-		io.WriteString(w, "auth token")
-	})
-	http.HandleFunc("/api/v1/refresh", func(w http.ResponseWriter, r *http.Request) {
-		io.WriteString(w, "refresh token")
-	})
+	ctx := context.Background()
+	if err := client.Schema.WriteTo(ctx, os.Stdout); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	secret, _ := server.ReadSecret("../certs/private.key")
+	s := server.NewAuthServer(client, ":8080", secret)
+	log.Fatal(s.ListenAndServe())
 }

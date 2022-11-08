@@ -47,7 +47,7 @@ services:
     ports:
       - 4080:8080
     volumes:
-      - ./auth/app:/app
+      - ./auth/app:/github.com/kamakuni/rails-jwt/auth/app
 
   api:
     tty: true

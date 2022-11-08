@@ -8,14 +8,16 @@ import (
 	"net/http"
 	"os"
 	"testing"
+
+	"github.com/kamakuni/rails-jwt/auth/app/server"
 )
 
-var s *Server
+var s *server.Server
 
 func TestMain(m *testing.M) {
 	client := Open("postgres://postgres:password@auth-db/postgres?sslmode=disable")
-	secret, _ := ReadSecret("../certs/private.key")
-	s = NewAuthServer(client, ":8080", secret)
+	secret, _ := server.ReadSecret("../certs/private.key")
+	s = server.NewAuthServer(client, ":8080", secret)
 	go func() {
 		log.Fatal(s.ListenAndServe())
 	}()
@@ -50,7 +52,7 @@ func TestToken(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	var responseJson Response
+	var responseJson server.Response
 	if err := json.Unmarshal(body, &responseJson); err != nil {
 		t.Error(err)
 	}

@@ -1,4 +1,4 @@
-package main
+package server
 
 import (
 	"encoding/json"
@@ -11,6 +11,7 @@ import (
 
 	"entgo.io/ent/entc/integration/multischema/ent"
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/kamakuni/rails-jwt/auth/app/uuid"
 )
 
 type Server struct {
@@ -33,7 +34,7 @@ func CreateAccessToken(userId string, now time.Time, secret string) (string, err
 }
 
 func CreateRefreshToken() (string, error) {
-	uuid, err := NewUUID()
+	uuid, err := uuid.NewUUID()
 	if err != nil {
 		return "", nil
 	}
