@@ -9,8 +9,8 @@ import (
 	"strconv"
 	"time"
 
-	"entgo.io/ent/entc/integration/multischema/ent"
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/kamakuni/rails-jwt/auth/app/ent"
 	"github.com/kamakuni/rails-jwt/auth/app/uuid"
 )
 
