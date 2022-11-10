@@ -57,6 +57,8 @@ func ReadSecret(path string) (string, error) {
 func NewAuthServer(client *ent.Client, addr string, secret string) *Server {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/v1/token", func(w http.ResponseWriter, r *http.Request) {
+		v := r.URL.Query()
+		fmt.Printf("grant_type: %v", v.Get("grant_type"))
 		if r.Method != http.MethodPost {
 			w.WriteHeader(http.StatusMethodNotAllowed)
 			return
