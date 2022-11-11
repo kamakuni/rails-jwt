@@ -24,6 +24,23 @@ type Response struct {
 	RefreshToken string `json:"refresh_token"`
 }
 
+type GrantType int
+
+const (
+	AuthCode GrantType = iota
+	RefreshToken
+)
+
+func (g GrantType) String() string {
+	switch g {
+	case RefreshToken:
+		return "refresh_token"
+	case AuthCode:
+		return "authorization_code"
+	}
+	return ""
+}
+
 func CreateAccessToken(userId string, now time.Time, secret string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub": "123456789",
@@ -57,8 +74,6 @@ func ReadSecret(path string) (string, error) {
 func NewAuthServer(client *ent.Client, addr string, secret string) *Server {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/v1/token", func(w http.ResponseWriter, r *http.Request) {
-		v := r.URL.Query()
-		fmt.Printf("grant_type: %v", v.Get("grant_type"))
 		if r.Method != http.MethodPost {
 			w.WriteHeader(http.StatusMethodNotAllowed)
 			return
@@ -80,6 +95,9 @@ func NewAuthServer(client *ent.Client, addr string, secret string) *Server {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
+
+		v := r.URL.Query()
+		fmt.Printf("grant_type: %v", v.Get("grant_type"))
 
 		var jsonBody map[string]interface{}
 		err = json.Unmarshal(body[:length], &jsonBody)
