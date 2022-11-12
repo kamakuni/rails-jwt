@@ -73,7 +73,7 @@ func ReadSecret(path string) (string, error) {
 
 func NewAuthServer(client *ent.Client, addr string, secret string) *Server {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/api/v1/token", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/api/v1/authorization", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			w.WriteHeader(http.StatusMethodNotAllowed)
 			return
