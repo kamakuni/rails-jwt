@@ -11,6 +11,9 @@ var (
 	// AuthorizationCodesColumns holds the columns for the "authorization_codes" table.
 	AuthorizationCodesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "client_id", Type: field.TypeString},
+		{Name: "user_id", Type: field.TypeString},
+		{Name: "scopes", Type: field.TypeString},
 	}
 	// AuthorizationCodesTable holds the schema information for the "authorization_codes" table.
 	AuthorizationCodesTable = &schema.Table{
@@ -22,7 +25,6 @@ var (
 	OauthClientsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "client_id", Type: field.TypeString},
-		{Name: "client_secret", Type: field.TypeString},
 		{Name: "client_type", Type: field.TypeString},
 		{Name: "client_name", Type: field.TypeString},
 		{Name: "redirect_uri", Type: field.TypeString},

@@ -9,36 +9,13 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/kamakuni/rails-jwt/auth/app/constant"
 	"github.com/kamakuni/rails-jwt/auth/app/ent"
-	"github.com/kamakuni/rails-jwt/auth/app/uuid"
 )
 
 type Server struct {
 	*http.Server
 	client *ent.Client
-}
-
-type Response struct {
-	AccessToken  string `json:"access_token"`
-	RefreshToken string `json:"refresh_token"`
-}
-
-func CreateAccessToken(userId string, now time.Time, secret string) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"sub": "123456789",
-		"exp": now.Add(10 * time.Minute).Unix(),
-		"iat": now.Unix(),
-	})
-	return token.SignedString([]byte(secret))
-}
-
-func CreateRefreshToken() (string, error) {
-	uuid, err := uuid.NewUUID()
-	if err != nil {
-		return "", nil
-	}
-	return uuid.String(), nil
 }
 
 func ReadSecret(path string) (string, error) {
@@ -58,39 +35,59 @@ func NewAuthServer(client *ent.Client, addr string, secret string) *Server {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/v1/client", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
-			w.WriteHeader(http.StatusMethodNotAllowed)
+			http.Error(w, "", http.StatusMethodNotAllowed)
 			return
 		}
 		if r.Header.Get("Content-Type") != "application/json" {
-			w.WriteHeader(http.StatusBadRequest)
+			http.Error(w, "", http.StatusBadRequest)
 			return
 		}
 		length, err := strconv.Atoi(r.Header.Get("Content-Length"))
 		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
 		body := make([]byte, length)
 		length, err = r.Body.Read(body)
 		if err != nil && err != io.EOF {
-			w.WriteHeader(http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
 		var jsonBody map[string]interface{}
 		err = json.Unmarshal(body[:length], &jsonBody)
 		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		clientName := jsonBody["client_name"]
+		clientID, err := CreateClientID()
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		clientName := jsonBody["client_name"].(string)
+		redirectURI := jsonBody["redirect_uri"].(string)
+		if clientName == "" || redirectURI == "" {
+			http.Error(w, "", http.StatusBadRequest)
+			return
+		}
 		client.OAuthClient.
-			Create()
-		/*SetClientID().
-		SetClientName(clientName).
-		SetClientType("public").
-		Set*/
+			Create().
+			SetClientID(clientID).
+			SetClientName(clientName).
+			SetClientType(constant.Public.String()).
+			SetRedirectURI(redirectURI)
+		res := &ResponseClient{ClientID: clientID, ClientName: clientName}
+		buf, err := json.Marshal(res)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(buf)
+		return
 	})
 	mux.HandleFunc("/api/v1/authorize", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {

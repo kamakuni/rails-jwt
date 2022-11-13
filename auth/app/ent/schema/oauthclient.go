@@ -14,7 +14,6 @@ type OAuthClient struct {
 func (OAuthClient) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("client_id").NotEmpty(),
-		field.String("client_secret").NotEmpty(),
 		field.String("client_type").NotEmpty(),
 		field.String("client_name").NotEmpty(),
 		field.String("redirect_uri").NotEmpty(),

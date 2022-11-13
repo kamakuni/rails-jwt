@@ -25,12 +25,6 @@ func (occ *OAuthClientCreate) SetClientID(s string) *OAuthClientCreate {
 	return occ
 }
 
-// SetClientSecret sets the "client_secret" field.
-func (occ *OAuthClientCreate) SetClientSecret(s string) *OAuthClientCreate {
-	occ.mutation.SetClientSecret(s)
-	return occ
-}
-
 // SetClientType sets the "client_type" field.
 func (occ *OAuthClientCreate) SetClientType(s string) *OAuthClientCreate {
 	occ.mutation.SetClientType(s)
@@ -139,14 +133,6 @@ func (occ *OAuthClientCreate) check() error {
 			return &ValidationError{Name: "client_id", err: fmt.Errorf(`ent: validator failed for field "OAuthClient.client_id": %w`, err)}
 		}
 	}
-	if _, ok := occ.mutation.ClientSecret(); !ok {
-		return &ValidationError{Name: "client_secret", err: errors.New(`ent: missing required field "OAuthClient.client_secret"`)}
-	}
-	if v, ok := occ.mutation.ClientSecret(); ok {
-		if err := oauthclient.ClientSecretValidator(v); err != nil {
-			return &ValidationError{Name: "client_secret", err: fmt.Errorf(`ent: validator failed for field "OAuthClient.client_secret": %w`, err)}
-		}
-	}
 	if _, ok := occ.mutation.ClientType(); !ok {
 		return &ValidationError{Name: "client_type", err: errors.New(`ent: missing required field "OAuthClient.client_type"`)}
 	}
@@ -209,10 +195,6 @@ func (occ *OAuthClientCreate) createSpec() (*OAuthClient, *sqlgraph.CreateSpec) 
 	if value, ok := occ.mutation.ClientID(); ok {
 		_spec.SetField(oauthclient.FieldClientID, field.TypeString, value)
 		_node.ClientID = value
-	}
-	if value, ok := occ.mutation.ClientSecret(); ok {
-		_spec.SetField(oauthclient.FieldClientSecret, field.TypeString, value)
-		_node.ClientSecret = value
 	}
 	if value, ok := occ.mutation.ClientType(); ok {
 		_spec.SetField(oauthclient.FieldClientType, field.TypeString, value)

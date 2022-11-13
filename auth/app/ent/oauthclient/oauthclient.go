@@ -9,8 +9,6 @@ const (
 	FieldID = "id"
 	// FieldClientID holds the string denoting the client_id field in the database.
 	FieldClientID = "client_id"
-	// FieldClientSecret holds the string denoting the client_secret field in the database.
-	FieldClientSecret = "client_secret"
 	// FieldClientType holds the string denoting the client_type field in the database.
 	FieldClientType = "client_type"
 	// FieldClientName holds the string denoting the client_name field in the database.
@@ -27,7 +25,6 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldClientID,
-	FieldClientSecret,
 	FieldClientType,
 	FieldClientName,
 	FieldRedirectURI,
@@ -47,8 +44,6 @@ func ValidColumn(column string) bool {
 var (
 	// ClientIDValidator is a validator for the "client_id" field. It is called by the builders before save.
 	ClientIDValidator func(string) error
-	// ClientSecretValidator is a validator for the "client_secret" field. It is called by the builders before save.
-	ClientSecretValidator func(string) error
 	// ClientTypeValidator is a validator for the "client_type" field. It is called by the builders before save.
 	ClientTypeValidator func(string) error
 	// ClientNameValidator is a validator for the "client_name" field. It is called by the builders before save.

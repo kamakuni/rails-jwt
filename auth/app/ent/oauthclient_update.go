@@ -33,12 +33,6 @@ func (ocu *OAuthClientUpdate) SetClientID(s string) *OAuthClientUpdate {
 	return ocu
 }
 
-// SetClientSecret sets the "client_secret" field.
-func (ocu *OAuthClientUpdate) SetClientSecret(s string) *OAuthClientUpdate {
-	ocu.mutation.SetClientSecret(s)
-	return ocu
-}
-
 // SetClientType sets the "client_type" field.
 func (ocu *OAuthClientUpdate) SetClientType(s string) *OAuthClientUpdate {
 	ocu.mutation.SetClientType(s)
@@ -135,11 +129,6 @@ func (ocu *OAuthClientUpdate) check() error {
 			return &ValidationError{Name: "client_id", err: fmt.Errorf(`ent: validator failed for field "OAuthClient.client_id": %w`, err)}
 		}
 	}
-	if v, ok := ocu.mutation.ClientSecret(); ok {
-		if err := oauthclient.ClientSecretValidator(v); err != nil {
-			return &ValidationError{Name: "client_secret", err: fmt.Errorf(`ent: validator failed for field "OAuthClient.client_secret": %w`, err)}
-		}
-	}
 	if v, ok := ocu.mutation.ClientType(); ok {
 		if err := oauthclient.ClientTypeValidator(v); err != nil {
 			return &ValidationError{Name: "client_type", err: fmt.Errorf(`ent: validator failed for field "OAuthClient.client_type": %w`, err)}
@@ -184,9 +173,6 @@ func (ocu *OAuthClientUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := ocu.mutation.ClientID(); ok {
 		_spec.SetField(oauthclient.FieldClientID, field.TypeString, value)
 	}
-	if value, ok := ocu.mutation.ClientSecret(); ok {
-		_spec.SetField(oauthclient.FieldClientSecret, field.TypeString, value)
-	}
 	if value, ok := ocu.mutation.ClientType(); ok {
 		_spec.SetField(oauthclient.FieldClientType, field.TypeString, value)
 	}
@@ -221,12 +207,6 @@ type OAuthClientUpdateOne struct {
 // SetClientID sets the "client_id" field.
 func (ocuo *OAuthClientUpdateOne) SetClientID(s string) *OAuthClientUpdateOne {
 	ocuo.mutation.SetClientID(s)
-	return ocuo
-}
-
-// SetClientSecret sets the "client_secret" field.
-func (ocuo *OAuthClientUpdateOne) SetClientSecret(s string) *OAuthClientUpdateOne {
-	ocuo.mutation.SetClientSecret(s)
 	return ocuo
 }
 
@@ -339,11 +319,6 @@ func (ocuo *OAuthClientUpdateOne) check() error {
 			return &ValidationError{Name: "client_id", err: fmt.Errorf(`ent: validator failed for field "OAuthClient.client_id": %w`, err)}
 		}
 	}
-	if v, ok := ocuo.mutation.ClientSecret(); ok {
-		if err := oauthclient.ClientSecretValidator(v); err != nil {
-			return &ValidationError{Name: "client_secret", err: fmt.Errorf(`ent: validator failed for field "OAuthClient.client_secret": %w`, err)}
-		}
-	}
 	if v, ok := ocuo.mutation.ClientType(); ok {
 		if err := oauthclient.ClientTypeValidator(v); err != nil {
 			return &ValidationError{Name: "client_type", err: fmt.Errorf(`ent: validator failed for field "OAuthClient.client_type": %w`, err)}
@@ -404,9 +379,6 @@ func (ocuo *OAuthClientUpdateOne) sqlSave(ctx context.Context) (_node *OAuthClie
 	}
 	if value, ok := ocuo.mutation.ClientID(); ok {
 		_spec.SetField(oauthclient.FieldClientID, field.TypeString, value)
-	}
-	if value, ok := ocuo.mutation.ClientSecret(); ok {
-		_spec.SetField(oauthclient.FieldClientSecret, field.TypeString, value)
 	}
 	if value, ok := ocuo.mutation.ClientType(); ok {
 		_spec.SetField(oauthclient.FieldClientType, field.TypeString, value)

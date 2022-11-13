@@ -7,6 +7,12 @@ const (
 	Label = "authorization_code"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldClientID holds the string denoting the client_id field in the database.
+	FieldClientID = "client_id"
+	// FieldUserID holds the string denoting the user_id field in the database.
+	FieldUserID = "user_id"
+	// FieldScopes holds the string denoting the scopes field in the database.
+	FieldScopes = "scopes"
 	// Table holds the table name of the authorizationcode in the database.
 	Table = "authorization_codes"
 )
@@ -14,6 +20,9 @@ const (
 // Columns holds all SQL columns for authorizationcode fields.
 var Columns = []string{
 	FieldID,
+	FieldClientID,
+	FieldUserID,
+	FieldScopes,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -25,3 +34,12 @@ func ValidColumn(column string) bool {
 	}
 	return false
 }
+
+var (
+	// ClientIDValidator is a validator for the "client_id" field. It is called by the builders before save.
+	ClientIDValidator func(string) error
+	// UserIDValidator is a validator for the "user_id" field. It is called by the builders before save.
+	UserIDValidator func(string) error
+	// ScopesValidator is a validator for the "scopes" field. It is called by the builders before save.
+	ScopesValidator func(string) error
+)

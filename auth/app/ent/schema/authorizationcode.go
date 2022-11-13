@@ -1,6 +1,9 @@
 package schema
 
-import "entgo.io/ent"
+import (
+	"entgo.io/ent"
+	"entgo.io/ent/schema/field"
+)
 
 // AuthorizationCode holds the schema definition for the AuthorizationCode entity.
 type AuthorizationCode struct {
@@ -9,7 +12,11 @@ type AuthorizationCode struct {
 
 // Fields of the AuthorizationCode.
 func (AuthorizationCode) Fields() []ent.Field {
-	return nil
+	return []ent.Field{
+		field.String("client_id").NotEmpty(),
+		field.String("user_id").NotEmpty(),
+		field.String("scopes").NotEmpty(),
+	}
 }
 
 // Edges of the AuthorizationCode.

@@ -12,9 +12,15 @@ import (
 
 // AuthorizationCode is the model entity for the AuthorizationCode schema.
 type AuthorizationCode struct {
-	config
+	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
+	// ClientID holds the value of the "client_id" field.
+	ClientID string `json:"client_id,omitempty"`
+	// UserID holds the value of the "user_id" field.
+	UserID string `json:"user_id,omitempty"`
+	// Scopes holds the value of the "scopes" field.
+	Scopes string `json:"scopes,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -24,6 +30,8 @@ func (*AuthorizationCode) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case authorizationcode.FieldID:
 			values[i] = new(sql.NullInt64)
+		case authorizationcode.FieldClientID, authorizationcode.FieldUserID, authorizationcode.FieldScopes:
+			values[i] = new(sql.NullString)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type AuthorizationCode", columns[i])
 		}
@@ -45,6 +53,24 @@ func (ac *AuthorizationCode) assignValues(columns []string, values []any) error 
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			ac.ID = int(value.Int64)
+		case authorizationcode.FieldClientID:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field client_id", values[i])
+			} else if value.Valid {
+				ac.ClientID = value.String
+			}
+		case authorizationcode.FieldUserID:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field user_id", values[i])
+			} else if value.Valid {
+				ac.UserID = value.String
+			}
+		case authorizationcode.FieldScopes:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field scopes", values[i])
+			} else if value.Valid {
+				ac.Scopes = value.String
+			}
 		}
 	}
 	return nil
@@ -72,7 +98,15 @@ func (ac *AuthorizationCode) Unwrap() *AuthorizationCode {
 func (ac *AuthorizationCode) String() string {
 	var builder strings.Builder
 	builder.WriteString("AuthorizationCode(")
-	builder.WriteString(fmt.Sprintf("id=%v", ac.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", ac.ID))
+	builder.WriteString("client_id=")
+	builder.WriteString(ac.ClientID)
+	builder.WriteString(", ")
+	builder.WriteString("user_id=")
+	builder.WriteString(ac.UserID)
+	builder.WriteString(", ")
+	builder.WriteString("scopes=")
+	builder.WriteString(ac.Scopes)
 	builder.WriteByte(')')
 	return builder.String()
 }

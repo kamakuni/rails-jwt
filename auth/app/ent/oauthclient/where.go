@@ -85,13 +85,6 @@ func ClientID(v string) predicate.OAuthClient {
 	})
 }
 
-// ClientSecret applies equality check predicate on the "client_secret" field. It's identical to ClientSecretEQ.
-func ClientSecret(v string) predicate.OAuthClient {
-	return predicate.OAuthClient(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldClientSecret), v))
-	})
-}
-
 // ClientType applies equality check predicate on the "client_type" field. It's identical to ClientTypeEQ.
 func ClientType(v string) predicate.OAuthClient {
 	return predicate.OAuthClient(func(s *sql.Selector) {
@@ -216,105 +209,6 @@ func ClientIDEqualFold(v string) predicate.OAuthClient {
 func ClientIDContainsFold(v string) predicate.OAuthClient {
 	return predicate.OAuthClient(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldClientID), v))
-	})
-}
-
-// ClientSecretEQ applies the EQ predicate on the "client_secret" field.
-func ClientSecretEQ(v string) predicate.OAuthClient {
-	return predicate.OAuthClient(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldClientSecret), v))
-	})
-}
-
-// ClientSecretNEQ applies the NEQ predicate on the "client_secret" field.
-func ClientSecretNEQ(v string) predicate.OAuthClient {
-	return predicate.OAuthClient(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldClientSecret), v))
-	})
-}
-
-// ClientSecretIn applies the In predicate on the "client_secret" field.
-func ClientSecretIn(vs ...string) predicate.OAuthClient {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.OAuthClient(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldClientSecret), v...))
-	})
-}
-
-// ClientSecretNotIn applies the NotIn predicate on the "client_secret" field.
-func ClientSecretNotIn(vs ...string) predicate.OAuthClient {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.OAuthClient(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldClientSecret), v...))
-	})
-}
-
-// ClientSecretGT applies the GT predicate on the "client_secret" field.
-func ClientSecretGT(v string) predicate.OAuthClient {
-	return predicate.OAuthClient(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldClientSecret), v))
-	})
-}
-
-// ClientSecretGTE applies the GTE predicate on the "client_secret" field.
-func ClientSecretGTE(v string) predicate.OAuthClient {
-	return predicate.OAuthClient(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldClientSecret), v))
-	})
-}
-
-// ClientSecretLT applies the LT predicate on the "client_secret" field.
-func ClientSecretLT(v string) predicate.OAuthClient {
-	return predicate.OAuthClient(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldClientSecret), v))
-	})
-}
-
-// ClientSecretLTE applies the LTE predicate on the "client_secret" field.
-func ClientSecretLTE(v string) predicate.OAuthClient {
-	return predicate.OAuthClient(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldClientSecret), v))
-	})
-}
-
-// ClientSecretContains applies the Contains predicate on the "client_secret" field.
-func ClientSecretContains(v string) predicate.OAuthClient {
-	return predicate.OAuthClient(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldClientSecret), v))
-	})
-}
-
-// ClientSecretHasPrefix applies the HasPrefix predicate on the "client_secret" field.
-func ClientSecretHasPrefix(v string) predicate.OAuthClient {
-	return predicate.OAuthClient(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldClientSecret), v))
-	})
-}
-
-// ClientSecretHasSuffix applies the HasSuffix predicate on the "client_secret" field.
-func ClientSecretHasSuffix(v string) predicate.OAuthClient {
-	return predicate.OAuthClient(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldClientSecret), v))
-	})
-}
-
-// ClientSecretEqualFold applies the EqualFold predicate on the "client_secret" field.
-func ClientSecretEqualFold(v string) predicate.OAuthClient {
-	return predicate.OAuthClient(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldClientSecret), v))
-	})
-}
-
-// ClientSecretContainsFold applies the ContainsFold predicate on the "client_secret" field.
-func ClientSecretContainsFold(v string) predicate.OAuthClient {
-	return predicate.OAuthClient(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldClientSecret), v))
 	})
 }
 

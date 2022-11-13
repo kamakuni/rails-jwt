@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -16,6 +17,24 @@ type AuthorizationCodeCreate struct {
 	config
 	mutation *AuthorizationCodeMutation
 	hooks    []Hook
+}
+
+// SetClientID sets the "client_id" field.
+func (acc *AuthorizationCodeCreate) SetClientID(s string) *AuthorizationCodeCreate {
+	acc.mutation.SetClientID(s)
+	return acc
+}
+
+// SetUserID sets the "user_id" field.
+func (acc *AuthorizationCodeCreate) SetUserID(s string) *AuthorizationCodeCreate {
+	acc.mutation.SetUserID(s)
+	return acc
+}
+
+// SetScopes sets the "scopes" field.
+func (acc *AuthorizationCodeCreate) SetScopes(s string) *AuthorizationCodeCreate {
+	acc.mutation.SetScopes(s)
+	return acc
 }
 
 // Mutation returns the AuthorizationCodeMutation object of the builder.
@@ -94,6 +113,30 @@ func (acc *AuthorizationCodeCreate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (acc *AuthorizationCodeCreate) check() error {
+	if _, ok := acc.mutation.ClientID(); !ok {
+		return &ValidationError{Name: "client_id", err: errors.New(`ent: missing required field "AuthorizationCode.client_id"`)}
+	}
+	if v, ok := acc.mutation.ClientID(); ok {
+		if err := authorizationcode.ClientIDValidator(v); err != nil {
+			return &ValidationError{Name: "client_id", err: fmt.Errorf(`ent: validator failed for field "AuthorizationCode.client_id": %w`, err)}
+		}
+	}
+	if _, ok := acc.mutation.UserID(); !ok {
+		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "AuthorizationCode.user_id"`)}
+	}
+	if v, ok := acc.mutation.UserID(); ok {
+		if err := authorizationcode.UserIDValidator(v); err != nil {
+			return &ValidationError{Name: "user_id", err: fmt.Errorf(`ent: validator failed for field "AuthorizationCode.user_id": %w`, err)}
+		}
+	}
+	if _, ok := acc.mutation.Scopes(); !ok {
+		return &ValidationError{Name: "scopes", err: errors.New(`ent: missing required field "AuthorizationCode.scopes"`)}
+	}
+	if v, ok := acc.mutation.Scopes(); ok {
+		if err := authorizationcode.ScopesValidator(v); err != nil {
+			return &ValidationError{Name: "scopes", err: fmt.Errorf(`ent: validator failed for field "AuthorizationCode.scopes": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -121,6 +164,18 @@ func (acc *AuthorizationCodeCreate) createSpec() (*AuthorizationCode, *sqlgraph.
 			},
 		}
 	)
+	if value, ok := acc.mutation.ClientID(); ok {
+		_spec.SetField(authorizationcode.FieldClientID, field.TypeString, value)
+		_node.ClientID = value
+	}
+	if value, ok := acc.mutation.UserID(); ok {
+		_spec.SetField(authorizationcode.FieldUserID, field.TypeString, value)
+		_node.UserID = value
+	}
+	if value, ok := acc.mutation.Scopes(); ok {
+		_spec.SetField(authorizationcode.FieldScopes, field.TypeString, value)
+		_node.Scopes = value
+	}
 	return _node, _spec
 }
 

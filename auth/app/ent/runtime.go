@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"github.com/kamakuni/rails-jwt/auth/app/ent/authorizationcode"
 	"github.com/kamakuni/rails-jwt/auth/app/ent/oauthclient"
 	"github.com/kamakuni/rails-jwt/auth/app/ent/refreshtoken"
 	"github.com/kamakuni/rails-jwt/auth/app/ent/schema"
@@ -13,30 +14,40 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	authorizationcodeFields := schema.AuthorizationCode{}.Fields()
+	_ = authorizationcodeFields
+	// authorizationcodeDescClientID is the schema descriptor for client_id field.
+	authorizationcodeDescClientID := authorizationcodeFields[0].Descriptor()
+	// authorizationcode.ClientIDValidator is a validator for the "client_id" field. It is called by the builders before save.
+	authorizationcode.ClientIDValidator = authorizationcodeDescClientID.Validators[0].(func(string) error)
+	// authorizationcodeDescUserID is the schema descriptor for user_id field.
+	authorizationcodeDescUserID := authorizationcodeFields[1].Descriptor()
+	// authorizationcode.UserIDValidator is a validator for the "user_id" field. It is called by the builders before save.
+	authorizationcode.UserIDValidator = authorizationcodeDescUserID.Validators[0].(func(string) error)
+	// authorizationcodeDescScopes is the schema descriptor for scopes field.
+	authorizationcodeDescScopes := authorizationcodeFields[2].Descriptor()
+	// authorizationcode.ScopesValidator is a validator for the "scopes" field. It is called by the builders before save.
+	authorizationcode.ScopesValidator = authorizationcodeDescScopes.Validators[0].(func(string) error)
 	oauthclientFields := schema.OAuthClient{}.Fields()
 	_ = oauthclientFields
 	// oauthclientDescClientID is the schema descriptor for client_id field.
 	oauthclientDescClientID := oauthclientFields[0].Descriptor()
 	// oauthclient.ClientIDValidator is a validator for the "client_id" field. It is called by the builders before save.
 	oauthclient.ClientIDValidator = oauthclientDescClientID.Validators[0].(func(string) error)
-	// oauthclientDescClientSecret is the schema descriptor for client_secret field.
-	oauthclientDescClientSecret := oauthclientFields[1].Descriptor()
-	// oauthclient.ClientSecretValidator is a validator for the "client_secret" field. It is called by the builders before save.
-	oauthclient.ClientSecretValidator = oauthclientDescClientSecret.Validators[0].(func(string) error)
 	// oauthclientDescClientType is the schema descriptor for client_type field.
-	oauthclientDescClientType := oauthclientFields[2].Descriptor()
+	oauthclientDescClientType := oauthclientFields[1].Descriptor()
 	// oauthclient.ClientTypeValidator is a validator for the "client_type" field. It is called by the builders before save.
 	oauthclient.ClientTypeValidator = oauthclientDescClientType.Validators[0].(func(string) error)
 	// oauthclientDescClientName is the schema descriptor for client_name field.
-	oauthclientDescClientName := oauthclientFields[3].Descriptor()
+	oauthclientDescClientName := oauthclientFields[2].Descriptor()
 	// oauthclient.ClientNameValidator is a validator for the "client_name" field. It is called by the builders before save.
 	oauthclient.ClientNameValidator = oauthclientDescClientName.Validators[0].(func(string) error)
 	// oauthclientDescRedirectURI is the schema descriptor for redirect_uri field.
-	oauthclientDescRedirectURI := oauthclientFields[4].Descriptor()
+	oauthclientDescRedirectURI := oauthclientFields[3].Descriptor()
 	// oauthclient.RedirectURIValidator is a validator for the "redirect_uri" field. It is called by the builders before save.
 	oauthclient.RedirectURIValidator = oauthclientDescRedirectURI.Validators[0].(func(string) error)
 	// oauthclientDescScope is the schema descriptor for scope field.
-	oauthclientDescScope := oauthclientFields[5].Descriptor()
+	oauthclientDescScope := oauthclientFields[4].Descriptor()
 	// oauthclient.ScopeValidator is a validator for the "scope" field. It is called by the builders before save.
 	oauthclient.ScopeValidator = oauthclientDescScope.Validators[0].(func(string) error)
 	refreshtokenFields := schema.RefreshToken{}.Fields()

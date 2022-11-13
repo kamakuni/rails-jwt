@@ -31,6 +31,20 @@ func (g GrantTypes) String() string {
 	return ""
 }
 
+type ClientTypes int
+
+const (
+	Public ClientTypes = iota
+)
+
+func (c ClientTypes) String() string {
+	switch c {
+	case Public:
+		return "public"
+	}
+	return ""
+}
+
 type QueryParamsAuthorization int
 
 const (
