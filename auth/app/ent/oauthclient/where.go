@@ -78,6 +78,13 @@ func IDLTE(id int) predicate.OAuthClient {
 	})
 }
 
+// ClientID applies equality check predicate on the "client_id" field. It's identical to ClientIDEQ.
+func ClientID(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldClientID), v))
+	})
+}
+
 // ClientSecret applies equality check predicate on the "client_secret" field. It's identical to ClientSecretEQ.
 func ClientSecret(v string) predicate.OAuthClient {
 	return predicate.OAuthClient(func(s *sql.Selector) {
@@ -85,10 +92,130 @@ func ClientSecret(v string) predicate.OAuthClient {
 	})
 }
 
-// URL applies equality check predicate on the "url" field. It's identical to URLEQ.
-func URL(v string) predicate.OAuthClient {
+// ClientType applies equality check predicate on the "client_type" field. It's identical to ClientTypeEQ.
+func ClientType(v string) predicate.OAuthClient {
 	return predicate.OAuthClient(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldURL), v))
+		s.Where(sql.EQ(s.C(FieldClientType), v))
+	})
+}
+
+// ClientName applies equality check predicate on the "client_name" field. It's identical to ClientNameEQ.
+func ClientName(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldClientName), v))
+	})
+}
+
+// RedirectURI applies equality check predicate on the "redirect_uri" field. It's identical to RedirectURIEQ.
+func RedirectURI(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldRedirectURI), v))
+	})
+}
+
+// Scope applies equality check predicate on the "scope" field. It's identical to ScopeEQ.
+func Scope(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldScope), v))
+	})
+}
+
+// ClientIDEQ applies the EQ predicate on the "client_id" field.
+func ClientIDEQ(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldClientID), v))
+	})
+}
+
+// ClientIDNEQ applies the NEQ predicate on the "client_id" field.
+func ClientIDNEQ(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldClientID), v))
+	})
+}
+
+// ClientIDIn applies the In predicate on the "client_id" field.
+func ClientIDIn(vs ...string) predicate.OAuthClient {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldClientID), v...))
+	})
+}
+
+// ClientIDNotIn applies the NotIn predicate on the "client_id" field.
+func ClientIDNotIn(vs ...string) predicate.OAuthClient {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldClientID), v...))
+	})
+}
+
+// ClientIDGT applies the GT predicate on the "client_id" field.
+func ClientIDGT(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldClientID), v))
+	})
+}
+
+// ClientIDGTE applies the GTE predicate on the "client_id" field.
+func ClientIDGTE(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldClientID), v))
+	})
+}
+
+// ClientIDLT applies the LT predicate on the "client_id" field.
+func ClientIDLT(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldClientID), v))
+	})
+}
+
+// ClientIDLTE applies the LTE predicate on the "client_id" field.
+func ClientIDLTE(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldClientID), v))
+	})
+}
+
+// ClientIDContains applies the Contains predicate on the "client_id" field.
+func ClientIDContains(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldClientID), v))
+	})
+}
+
+// ClientIDHasPrefix applies the HasPrefix predicate on the "client_id" field.
+func ClientIDHasPrefix(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldClientID), v))
+	})
+}
+
+// ClientIDHasSuffix applies the HasSuffix predicate on the "client_id" field.
+func ClientIDHasSuffix(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldClientID), v))
+	})
+}
+
+// ClientIDEqualFold applies the EqualFold predicate on the "client_id" field.
+func ClientIDEqualFold(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldClientID), v))
+	})
+}
+
+// ClientIDContainsFold applies the ContainsFold predicate on the "client_id" field.
+func ClientIDContainsFold(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldClientID), v))
 	})
 }
 
@@ -191,102 +318,399 @@ func ClientSecretContainsFold(v string) predicate.OAuthClient {
 	})
 }
 
-// URLEQ applies the EQ predicate on the "url" field.
-func URLEQ(v string) predicate.OAuthClient {
+// ClientTypeEQ applies the EQ predicate on the "client_type" field.
+func ClientTypeEQ(v string) predicate.OAuthClient {
 	return predicate.OAuthClient(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldURL), v))
+		s.Where(sql.EQ(s.C(FieldClientType), v))
 	})
 }
 
-// URLNEQ applies the NEQ predicate on the "url" field.
-func URLNEQ(v string) predicate.OAuthClient {
+// ClientTypeNEQ applies the NEQ predicate on the "client_type" field.
+func ClientTypeNEQ(v string) predicate.OAuthClient {
 	return predicate.OAuthClient(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldURL), v))
+		s.Where(sql.NEQ(s.C(FieldClientType), v))
 	})
 }
 
-// URLIn applies the In predicate on the "url" field.
-func URLIn(vs ...string) predicate.OAuthClient {
+// ClientTypeIn applies the In predicate on the "client_type" field.
+func ClientTypeIn(vs ...string) predicate.OAuthClient {
 	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.OAuthClient(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldURL), v...))
+		s.Where(sql.In(s.C(FieldClientType), v...))
 	})
 }
 
-// URLNotIn applies the NotIn predicate on the "url" field.
-func URLNotIn(vs ...string) predicate.OAuthClient {
+// ClientTypeNotIn applies the NotIn predicate on the "client_type" field.
+func ClientTypeNotIn(vs ...string) predicate.OAuthClient {
 	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.OAuthClient(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldURL), v...))
+		s.Where(sql.NotIn(s.C(FieldClientType), v...))
 	})
 }
 
-// URLGT applies the GT predicate on the "url" field.
-func URLGT(v string) predicate.OAuthClient {
+// ClientTypeGT applies the GT predicate on the "client_type" field.
+func ClientTypeGT(v string) predicate.OAuthClient {
 	return predicate.OAuthClient(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldURL), v))
+		s.Where(sql.GT(s.C(FieldClientType), v))
 	})
 }
 
-// URLGTE applies the GTE predicate on the "url" field.
-func URLGTE(v string) predicate.OAuthClient {
+// ClientTypeGTE applies the GTE predicate on the "client_type" field.
+func ClientTypeGTE(v string) predicate.OAuthClient {
 	return predicate.OAuthClient(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldURL), v))
+		s.Where(sql.GTE(s.C(FieldClientType), v))
 	})
 }
 
-// URLLT applies the LT predicate on the "url" field.
-func URLLT(v string) predicate.OAuthClient {
+// ClientTypeLT applies the LT predicate on the "client_type" field.
+func ClientTypeLT(v string) predicate.OAuthClient {
 	return predicate.OAuthClient(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldURL), v))
+		s.Where(sql.LT(s.C(FieldClientType), v))
 	})
 }
 
-// URLLTE applies the LTE predicate on the "url" field.
-func URLLTE(v string) predicate.OAuthClient {
+// ClientTypeLTE applies the LTE predicate on the "client_type" field.
+func ClientTypeLTE(v string) predicate.OAuthClient {
 	return predicate.OAuthClient(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldURL), v))
+		s.Where(sql.LTE(s.C(FieldClientType), v))
 	})
 }
 
-// URLContains applies the Contains predicate on the "url" field.
-func URLContains(v string) predicate.OAuthClient {
+// ClientTypeContains applies the Contains predicate on the "client_type" field.
+func ClientTypeContains(v string) predicate.OAuthClient {
 	return predicate.OAuthClient(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldURL), v))
+		s.Where(sql.Contains(s.C(FieldClientType), v))
 	})
 }
 
-// URLHasPrefix applies the HasPrefix predicate on the "url" field.
-func URLHasPrefix(v string) predicate.OAuthClient {
+// ClientTypeHasPrefix applies the HasPrefix predicate on the "client_type" field.
+func ClientTypeHasPrefix(v string) predicate.OAuthClient {
 	return predicate.OAuthClient(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldURL), v))
+		s.Where(sql.HasPrefix(s.C(FieldClientType), v))
 	})
 }
 
-// URLHasSuffix applies the HasSuffix predicate on the "url" field.
-func URLHasSuffix(v string) predicate.OAuthClient {
+// ClientTypeHasSuffix applies the HasSuffix predicate on the "client_type" field.
+func ClientTypeHasSuffix(v string) predicate.OAuthClient {
 	return predicate.OAuthClient(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldURL), v))
+		s.Where(sql.HasSuffix(s.C(FieldClientType), v))
 	})
 }
 
-// URLEqualFold applies the EqualFold predicate on the "url" field.
-func URLEqualFold(v string) predicate.OAuthClient {
+// ClientTypeEqualFold applies the EqualFold predicate on the "client_type" field.
+func ClientTypeEqualFold(v string) predicate.OAuthClient {
 	return predicate.OAuthClient(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldURL), v))
+		s.Where(sql.EqualFold(s.C(FieldClientType), v))
 	})
 }
 
-// URLContainsFold applies the ContainsFold predicate on the "url" field.
-func URLContainsFold(v string) predicate.OAuthClient {
+// ClientTypeContainsFold applies the ContainsFold predicate on the "client_type" field.
+func ClientTypeContainsFold(v string) predicate.OAuthClient {
 	return predicate.OAuthClient(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldURL), v))
+		s.Where(sql.ContainsFold(s.C(FieldClientType), v))
+	})
+}
+
+// ClientNameEQ applies the EQ predicate on the "client_name" field.
+func ClientNameEQ(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldClientName), v))
+	})
+}
+
+// ClientNameNEQ applies the NEQ predicate on the "client_name" field.
+func ClientNameNEQ(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldClientName), v))
+	})
+}
+
+// ClientNameIn applies the In predicate on the "client_name" field.
+func ClientNameIn(vs ...string) predicate.OAuthClient {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldClientName), v...))
+	})
+}
+
+// ClientNameNotIn applies the NotIn predicate on the "client_name" field.
+func ClientNameNotIn(vs ...string) predicate.OAuthClient {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldClientName), v...))
+	})
+}
+
+// ClientNameGT applies the GT predicate on the "client_name" field.
+func ClientNameGT(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldClientName), v))
+	})
+}
+
+// ClientNameGTE applies the GTE predicate on the "client_name" field.
+func ClientNameGTE(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldClientName), v))
+	})
+}
+
+// ClientNameLT applies the LT predicate on the "client_name" field.
+func ClientNameLT(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldClientName), v))
+	})
+}
+
+// ClientNameLTE applies the LTE predicate on the "client_name" field.
+func ClientNameLTE(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldClientName), v))
+	})
+}
+
+// ClientNameContains applies the Contains predicate on the "client_name" field.
+func ClientNameContains(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldClientName), v))
+	})
+}
+
+// ClientNameHasPrefix applies the HasPrefix predicate on the "client_name" field.
+func ClientNameHasPrefix(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldClientName), v))
+	})
+}
+
+// ClientNameHasSuffix applies the HasSuffix predicate on the "client_name" field.
+func ClientNameHasSuffix(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldClientName), v))
+	})
+}
+
+// ClientNameEqualFold applies the EqualFold predicate on the "client_name" field.
+func ClientNameEqualFold(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldClientName), v))
+	})
+}
+
+// ClientNameContainsFold applies the ContainsFold predicate on the "client_name" field.
+func ClientNameContainsFold(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldClientName), v))
+	})
+}
+
+// RedirectURIEQ applies the EQ predicate on the "redirect_uri" field.
+func RedirectURIEQ(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldRedirectURI), v))
+	})
+}
+
+// RedirectURINEQ applies the NEQ predicate on the "redirect_uri" field.
+func RedirectURINEQ(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldRedirectURI), v))
+	})
+}
+
+// RedirectURIIn applies the In predicate on the "redirect_uri" field.
+func RedirectURIIn(vs ...string) predicate.OAuthClient {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldRedirectURI), v...))
+	})
+}
+
+// RedirectURINotIn applies the NotIn predicate on the "redirect_uri" field.
+func RedirectURINotIn(vs ...string) predicate.OAuthClient {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldRedirectURI), v...))
+	})
+}
+
+// RedirectURIGT applies the GT predicate on the "redirect_uri" field.
+func RedirectURIGT(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldRedirectURI), v))
+	})
+}
+
+// RedirectURIGTE applies the GTE predicate on the "redirect_uri" field.
+func RedirectURIGTE(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldRedirectURI), v))
+	})
+}
+
+// RedirectURILT applies the LT predicate on the "redirect_uri" field.
+func RedirectURILT(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldRedirectURI), v))
+	})
+}
+
+// RedirectURILTE applies the LTE predicate on the "redirect_uri" field.
+func RedirectURILTE(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldRedirectURI), v))
+	})
+}
+
+// RedirectURIContains applies the Contains predicate on the "redirect_uri" field.
+func RedirectURIContains(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldRedirectURI), v))
+	})
+}
+
+// RedirectURIHasPrefix applies the HasPrefix predicate on the "redirect_uri" field.
+func RedirectURIHasPrefix(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldRedirectURI), v))
+	})
+}
+
+// RedirectURIHasSuffix applies the HasSuffix predicate on the "redirect_uri" field.
+func RedirectURIHasSuffix(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldRedirectURI), v))
+	})
+}
+
+// RedirectURIEqualFold applies the EqualFold predicate on the "redirect_uri" field.
+func RedirectURIEqualFold(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldRedirectURI), v))
+	})
+}
+
+// RedirectURIContainsFold applies the ContainsFold predicate on the "redirect_uri" field.
+func RedirectURIContainsFold(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldRedirectURI), v))
+	})
+}
+
+// ScopeEQ applies the EQ predicate on the "scope" field.
+func ScopeEQ(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldScope), v))
+	})
+}
+
+// ScopeNEQ applies the NEQ predicate on the "scope" field.
+func ScopeNEQ(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldScope), v))
+	})
+}
+
+// ScopeIn applies the In predicate on the "scope" field.
+func ScopeIn(vs ...string) predicate.OAuthClient {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldScope), v...))
+	})
+}
+
+// ScopeNotIn applies the NotIn predicate on the "scope" field.
+func ScopeNotIn(vs ...string) predicate.OAuthClient {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldScope), v...))
+	})
+}
+
+// ScopeGT applies the GT predicate on the "scope" field.
+func ScopeGT(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldScope), v))
+	})
+}
+
+// ScopeGTE applies the GTE predicate on the "scope" field.
+func ScopeGTE(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldScope), v))
+	})
+}
+
+// ScopeLT applies the LT predicate on the "scope" field.
+func ScopeLT(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldScope), v))
+	})
+}
+
+// ScopeLTE applies the LTE predicate on the "scope" field.
+func ScopeLTE(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldScope), v))
+	})
+}
+
+// ScopeContains applies the Contains predicate on the "scope" field.
+func ScopeContains(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldScope), v))
+	})
+}
+
+// ScopeHasPrefix applies the HasPrefix predicate on the "scope" field.
+func ScopeHasPrefix(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldScope), v))
+	})
+}
+
+// ScopeHasSuffix applies the HasSuffix predicate on the "scope" field.
+func ScopeHasSuffix(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldScope), v))
+	})
+}
+
+// ScopeEqualFold applies the EqualFold predicate on the "scope" field.
+func ScopeEqualFold(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldScope), v))
+	})
+}
+
+// ScopeContainsFold applies the ContainsFold predicate on the "scope" field.
+func ScopeContainsFold(v string) predicate.OAuthClient {
+	return predicate.OAuthClient(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldScope), v))
 	})
 }
 

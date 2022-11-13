@@ -19,15 +19,39 @@ type OAuthClientCreate struct {
 	hooks    []Hook
 }
 
+// SetClientID sets the "client_id" field.
+func (occ *OAuthClientCreate) SetClientID(s string) *OAuthClientCreate {
+	occ.mutation.SetClientID(s)
+	return occ
+}
+
 // SetClientSecret sets the "client_secret" field.
 func (occ *OAuthClientCreate) SetClientSecret(s string) *OAuthClientCreate {
 	occ.mutation.SetClientSecret(s)
 	return occ
 }
 
-// SetURL sets the "url" field.
-func (occ *OAuthClientCreate) SetURL(s string) *OAuthClientCreate {
-	occ.mutation.SetURL(s)
+// SetClientType sets the "client_type" field.
+func (occ *OAuthClientCreate) SetClientType(s string) *OAuthClientCreate {
+	occ.mutation.SetClientType(s)
+	return occ
+}
+
+// SetClientName sets the "client_name" field.
+func (occ *OAuthClientCreate) SetClientName(s string) *OAuthClientCreate {
+	occ.mutation.SetClientName(s)
+	return occ
+}
+
+// SetRedirectURI sets the "redirect_uri" field.
+func (occ *OAuthClientCreate) SetRedirectURI(s string) *OAuthClientCreate {
+	occ.mutation.SetRedirectURI(s)
+	return occ
+}
+
+// SetScope sets the "scope" field.
+func (occ *OAuthClientCreate) SetScope(s string) *OAuthClientCreate {
+	occ.mutation.SetScope(s)
 	return occ
 }
 
@@ -107,6 +131,14 @@ func (occ *OAuthClientCreate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (occ *OAuthClientCreate) check() error {
+	if _, ok := occ.mutation.ClientID(); !ok {
+		return &ValidationError{Name: "client_id", err: errors.New(`ent: missing required field "OAuthClient.client_id"`)}
+	}
+	if v, ok := occ.mutation.ClientID(); ok {
+		if err := oauthclient.ClientIDValidator(v); err != nil {
+			return &ValidationError{Name: "client_id", err: fmt.Errorf(`ent: validator failed for field "OAuthClient.client_id": %w`, err)}
+		}
+	}
 	if _, ok := occ.mutation.ClientSecret(); !ok {
 		return &ValidationError{Name: "client_secret", err: errors.New(`ent: missing required field "OAuthClient.client_secret"`)}
 	}
@@ -115,12 +147,36 @@ func (occ *OAuthClientCreate) check() error {
 			return &ValidationError{Name: "client_secret", err: fmt.Errorf(`ent: validator failed for field "OAuthClient.client_secret": %w`, err)}
 		}
 	}
-	if _, ok := occ.mutation.URL(); !ok {
-		return &ValidationError{Name: "url", err: errors.New(`ent: missing required field "OAuthClient.url"`)}
+	if _, ok := occ.mutation.ClientType(); !ok {
+		return &ValidationError{Name: "client_type", err: errors.New(`ent: missing required field "OAuthClient.client_type"`)}
 	}
-	if v, ok := occ.mutation.URL(); ok {
-		if err := oauthclient.URLValidator(v); err != nil {
-			return &ValidationError{Name: "url", err: fmt.Errorf(`ent: validator failed for field "OAuthClient.url": %w`, err)}
+	if v, ok := occ.mutation.ClientType(); ok {
+		if err := oauthclient.ClientTypeValidator(v); err != nil {
+			return &ValidationError{Name: "client_type", err: fmt.Errorf(`ent: validator failed for field "OAuthClient.client_type": %w`, err)}
+		}
+	}
+	if _, ok := occ.mutation.ClientName(); !ok {
+		return &ValidationError{Name: "client_name", err: errors.New(`ent: missing required field "OAuthClient.client_name"`)}
+	}
+	if v, ok := occ.mutation.ClientName(); ok {
+		if err := oauthclient.ClientNameValidator(v); err != nil {
+			return &ValidationError{Name: "client_name", err: fmt.Errorf(`ent: validator failed for field "OAuthClient.client_name": %w`, err)}
+		}
+	}
+	if _, ok := occ.mutation.RedirectURI(); !ok {
+		return &ValidationError{Name: "redirect_uri", err: errors.New(`ent: missing required field "OAuthClient.redirect_uri"`)}
+	}
+	if v, ok := occ.mutation.RedirectURI(); ok {
+		if err := oauthclient.RedirectURIValidator(v); err != nil {
+			return &ValidationError{Name: "redirect_uri", err: fmt.Errorf(`ent: validator failed for field "OAuthClient.redirect_uri": %w`, err)}
+		}
+	}
+	if _, ok := occ.mutation.Scope(); !ok {
+		return &ValidationError{Name: "scope", err: errors.New(`ent: missing required field "OAuthClient.scope"`)}
+	}
+	if v, ok := occ.mutation.Scope(); ok {
+		if err := oauthclient.ScopeValidator(v); err != nil {
+			return &ValidationError{Name: "scope", err: fmt.Errorf(`ent: validator failed for field "OAuthClient.scope": %w`, err)}
 		}
 	}
 	return nil
@@ -150,13 +206,29 @@ func (occ *OAuthClientCreate) createSpec() (*OAuthClient, *sqlgraph.CreateSpec) 
 			},
 		}
 	)
+	if value, ok := occ.mutation.ClientID(); ok {
+		_spec.SetField(oauthclient.FieldClientID, field.TypeString, value)
+		_node.ClientID = value
+	}
 	if value, ok := occ.mutation.ClientSecret(); ok {
 		_spec.SetField(oauthclient.FieldClientSecret, field.TypeString, value)
 		_node.ClientSecret = value
 	}
-	if value, ok := occ.mutation.URL(); ok {
-		_spec.SetField(oauthclient.FieldURL, field.TypeString, value)
-		_node.URL = value
+	if value, ok := occ.mutation.ClientType(); ok {
+		_spec.SetField(oauthclient.FieldClientType, field.TypeString, value)
+		_node.ClientType = value
+	}
+	if value, ok := occ.mutation.ClientName(); ok {
+		_spec.SetField(oauthclient.FieldClientName, field.TypeString, value)
+		_node.ClientName = value
+	}
+	if value, ok := occ.mutation.RedirectURI(); ok {
+		_spec.SetField(oauthclient.FieldRedirectURI, field.TypeString, value)
+		_node.RedirectURI = value
+	}
+	if value, ok := occ.mutation.Scope(); ok {
+		_spec.SetField(oauthclient.FieldScope, field.TypeString, value)
+		_node.Scope = value
 	}
 	return _node, _spec
 }

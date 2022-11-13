@@ -15,10 +15,18 @@ type OAuthClient struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
+	// ClientID holds the value of the "client_id" field.
+	ClientID string `json:"client_id,omitempty"`
 	// ClientSecret holds the value of the "client_secret" field.
 	ClientSecret string `json:"client_secret,omitempty"`
-	// URL holds the value of the "url" field.
-	URL string `json:"url,omitempty"`
+	// ClientType holds the value of the "client_type" field.
+	ClientType string `json:"client_type,omitempty"`
+	// ClientName holds the value of the "client_name" field.
+	ClientName string `json:"client_name,omitempty"`
+	// RedirectURI holds the value of the "redirect_uri" field.
+	RedirectURI string `json:"redirect_uri,omitempty"`
+	// Scope holds the value of the "scope" field.
+	Scope string `json:"scope,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -28,7 +36,7 @@ func (*OAuthClient) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case oauthclient.FieldID:
 			values[i] = new(sql.NullInt64)
-		case oauthclient.FieldClientSecret, oauthclient.FieldURL:
+		case oauthclient.FieldClientID, oauthclient.FieldClientSecret, oauthclient.FieldClientType, oauthclient.FieldClientName, oauthclient.FieldRedirectURI, oauthclient.FieldScope:
 			values[i] = new(sql.NullString)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type OAuthClient", columns[i])
@@ -51,17 +59,41 @@ func (oc *OAuthClient) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			oc.ID = int(value.Int64)
+		case oauthclient.FieldClientID:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field client_id", values[i])
+			} else if value.Valid {
+				oc.ClientID = value.String
+			}
 		case oauthclient.FieldClientSecret:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field client_secret", values[i])
 			} else if value.Valid {
 				oc.ClientSecret = value.String
 			}
-		case oauthclient.FieldURL:
+		case oauthclient.FieldClientType:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field url", values[i])
+				return fmt.Errorf("unexpected type %T for field client_type", values[i])
 			} else if value.Valid {
-				oc.URL = value.String
+				oc.ClientType = value.String
+			}
+		case oauthclient.FieldClientName:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field client_name", values[i])
+			} else if value.Valid {
+				oc.ClientName = value.String
+			}
+		case oauthclient.FieldRedirectURI:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field redirect_uri", values[i])
+			} else if value.Valid {
+				oc.RedirectURI = value.String
+			}
+		case oauthclient.FieldScope:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field scope", values[i])
+			} else if value.Valid {
+				oc.Scope = value.String
 			}
 		}
 	}
@@ -91,11 +123,23 @@ func (oc *OAuthClient) String() string {
 	var builder strings.Builder
 	builder.WriteString("OAuthClient(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", oc.ID))
+	builder.WriteString("client_id=")
+	builder.WriteString(oc.ClientID)
+	builder.WriteString(", ")
 	builder.WriteString("client_secret=")
 	builder.WriteString(oc.ClientSecret)
 	builder.WriteString(", ")
-	builder.WriteString("url=")
-	builder.WriteString(oc.URL)
+	builder.WriteString("client_type=")
+	builder.WriteString(oc.ClientType)
+	builder.WriteString(", ")
+	builder.WriteString("client_name=")
+	builder.WriteString(oc.ClientName)
+	builder.WriteString(", ")
+	builder.WriteString("redirect_uri=")
+	builder.WriteString(oc.RedirectURI)
+	builder.WriteString(", ")
+	builder.WriteString("scope=")
+	builder.WriteString(oc.Scope)
 	builder.WriteByte(')')
 	return builder.String()
 }

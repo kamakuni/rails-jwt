@@ -9,6 +9,19 @@ import (
 	"github.com/kamakuni/rails-jwt/auth/app/ent"
 )
 
+// The AuthorizationCodeFunc type is an adapter to allow the use of ordinary
+// function as AuthorizationCode mutator.
+type AuthorizationCodeFunc func(context.Context, *ent.AuthorizationCodeMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f AuthorizationCodeFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.AuthorizationCodeMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AuthorizationCodeMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The OAuthClientFunc type is an adapter to allow the use of ordinary
 // function as OAuthClient mutator.
 type OAuthClientFunc func(context.Context, *ent.OAuthClientMutation) (ent.Value, error)

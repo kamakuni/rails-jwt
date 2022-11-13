@@ -15,14 +15,30 @@ import (
 func init() {
 	oauthclientFields := schema.OAuthClient{}.Fields()
 	_ = oauthclientFields
+	// oauthclientDescClientID is the schema descriptor for client_id field.
+	oauthclientDescClientID := oauthclientFields[0].Descriptor()
+	// oauthclient.ClientIDValidator is a validator for the "client_id" field. It is called by the builders before save.
+	oauthclient.ClientIDValidator = oauthclientDescClientID.Validators[0].(func(string) error)
 	// oauthclientDescClientSecret is the schema descriptor for client_secret field.
-	oauthclientDescClientSecret := oauthclientFields[0].Descriptor()
+	oauthclientDescClientSecret := oauthclientFields[1].Descriptor()
 	// oauthclient.ClientSecretValidator is a validator for the "client_secret" field. It is called by the builders before save.
 	oauthclient.ClientSecretValidator = oauthclientDescClientSecret.Validators[0].(func(string) error)
-	// oauthclientDescURL is the schema descriptor for url field.
-	oauthclientDescURL := oauthclientFields[1].Descriptor()
-	// oauthclient.URLValidator is a validator for the "url" field. It is called by the builders before save.
-	oauthclient.URLValidator = oauthclientDescURL.Validators[0].(func(string) error)
+	// oauthclientDescClientType is the schema descriptor for client_type field.
+	oauthclientDescClientType := oauthclientFields[2].Descriptor()
+	// oauthclient.ClientTypeValidator is a validator for the "client_type" field. It is called by the builders before save.
+	oauthclient.ClientTypeValidator = oauthclientDescClientType.Validators[0].(func(string) error)
+	// oauthclientDescClientName is the schema descriptor for client_name field.
+	oauthclientDescClientName := oauthclientFields[3].Descriptor()
+	// oauthclient.ClientNameValidator is a validator for the "client_name" field. It is called by the builders before save.
+	oauthclient.ClientNameValidator = oauthclientDescClientName.Validators[0].(func(string) error)
+	// oauthclientDescRedirectURI is the schema descriptor for redirect_uri field.
+	oauthclientDescRedirectURI := oauthclientFields[4].Descriptor()
+	// oauthclient.RedirectURIValidator is a validator for the "redirect_uri" field. It is called by the builders before save.
+	oauthclient.RedirectURIValidator = oauthclientDescRedirectURI.Validators[0].(func(string) error)
+	// oauthclientDescScope is the schema descriptor for scope field.
+	oauthclientDescScope := oauthclientFields[5].Descriptor()
+	// oauthclient.ScopeValidator is a validator for the "scope" field. It is called by the builders before save.
+	oauthclient.ScopeValidator = oauthclientDescScope.Validators[0].(func(string) error)
 	refreshtokenFields := schema.RefreshToken{}.Fields()
 	_ = refreshtokenFields
 	// refreshtokenDescToken is the schema descriptor for token field.

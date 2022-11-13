@@ -24,23 +24,6 @@ type Response struct {
 	RefreshToken string `json:"refresh_token"`
 }
 
-type GrantType int
-
-const (
-	AuthCode GrantType = iota
-	RefreshToken
-)
-
-func (g GrantType) String() string {
-	switch g {
-	case RefreshToken:
-		return "refresh_token"
-	case AuthCode:
-		return "authorization_code"
-	}
-	return ""
-}
-
 func CreateAccessToken(userId string, now time.Time, secret string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub": "123456789",
@@ -73,7 +56,7 @@ func ReadSecret(path string) (string, error) {
 
 func NewAuthServer(client *ent.Client, addr string, secret string) *Server {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/api/v1/authorization", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/api/v1/client", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			w.WriteHeader(http.StatusMethodNotAllowed)
 			return
@@ -82,7 +65,6 @@ func NewAuthServer(client *ent.Client, addr string, secret string) *Server {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
-
 		length, err := strconv.Atoi(r.Header.Get("Content-Length"))
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -96,8 +78,47 @@ func NewAuthServer(client *ent.Client, addr string, secret string) *Server {
 			return
 		}
 
-		v := r.URL.Query()
-		fmt.Printf("grant_type: %v", v.Get("grant_type"))
+		var jsonBody map[string]interface{}
+		err = json.Unmarshal(body[:length], &jsonBody)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		clientName := jsonBody["client_name"]
+		client.OAuthClient.
+			Create()
+		/*SetClientID().
+		SetClientName(clientName).
+		SetClientType("public").
+		Set*/
+	})
+	mux.HandleFunc("/api/v1/authorize", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+			return
+		}
+		if r.Header.Get("Content-Type") != "application/json" {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		/*params := r.URL.Query()
+		for k,vs := range params {
+			if k ==
+		}*/
+
+		length, err := strconv.Atoi(r.Header.Get("Content-Length"))
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		body := make([]byte, length)
+		length, err = r.Body.Read(body)
+		if err != nil && err != io.EOF {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
 
 		var jsonBody map[string]interface{}
 		err = json.Unmarshal(body[:length], &jsonBody)

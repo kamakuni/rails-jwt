@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/kamakuni/rails-jwt/auth/app/ent/authorizationcode"
 	"github.com/kamakuni/rails-jwt/auth/app/ent/oauthclient"
 	"github.com/kamakuni/rails-jwt/auth/app/ent/refreshtoken"
 	"github.com/kamakuni/rails-jwt/auth/app/ent/user"
@@ -33,9 +34,10 @@ type OrderFunc func(*sql.Selector)
 // columnChecker returns a function indicates if the column exists in the given column.
 func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
-		oauthclient.Table:  oauthclient.ValidColumn,
-		refreshtoken.Table: refreshtoken.ValidColumn,
-		user.Table:         user.ValidColumn,
+		authorizationcode.Table: authorizationcode.ValidColumn,
+		oauthclient.Table:       oauthclient.ValidColumn,
+		refreshtoken.Table:      refreshtoken.ValidColumn,
+		user.Table:              user.ValidColumn,
 	}
 	check, ok := checks[table]
 	if !ok {

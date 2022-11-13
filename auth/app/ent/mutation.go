@@ -25,10 +25,260 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeOAuthClient  = "OAuthClient"
-	TypeRefreshToken = "RefreshToken"
-	TypeUser         = "User"
+	TypeAuthorizationCode = "AuthorizationCode"
+	TypeOAuthClient       = "OAuthClient"
+	TypeRefreshToken      = "RefreshToken"
+	TypeUser              = "User"
 )
+
+// AuthorizationCodeMutation represents an operation that mutates the AuthorizationCode nodes in the graph.
+type AuthorizationCodeMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *int
+	clearedFields map[string]struct{}
+	done          bool
+	oldValue      func(context.Context) (*AuthorizationCode, error)
+	predicates    []predicate.AuthorizationCode
+}
+
+var _ ent.Mutation = (*AuthorizationCodeMutation)(nil)
+
+// authorizationcodeOption allows management of the mutation configuration using functional options.
+type authorizationcodeOption func(*AuthorizationCodeMutation)
+
+// newAuthorizationCodeMutation creates new mutation for the AuthorizationCode entity.
+func newAuthorizationCodeMutation(c config, op Op, opts ...authorizationcodeOption) *AuthorizationCodeMutation {
+	m := &AuthorizationCodeMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeAuthorizationCode,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withAuthorizationCodeID sets the ID field of the mutation.
+func withAuthorizationCodeID(id int) authorizationcodeOption {
+	return func(m *AuthorizationCodeMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *AuthorizationCode
+		)
+		m.oldValue = func(ctx context.Context) (*AuthorizationCode, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().AuthorizationCode.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withAuthorizationCode sets the old AuthorizationCode of the mutation.
+func withAuthorizationCode(node *AuthorizationCode) authorizationcodeOption {
+	return func(m *AuthorizationCodeMutation) {
+		m.oldValue = func(context.Context) (*AuthorizationCode, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m AuthorizationCodeMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m AuthorizationCodeMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *AuthorizationCodeMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *AuthorizationCodeMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().AuthorizationCode.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// Where appends a list predicates to the AuthorizationCodeMutation builder.
+func (m *AuthorizationCodeMutation) Where(ps ...predicate.AuthorizationCode) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// Op returns the operation name.
+func (m *AuthorizationCodeMutation) Op() Op {
+	return m.op
+}
+
+// Type returns the node type of this mutation (AuthorizationCode).
+func (m *AuthorizationCodeMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *AuthorizationCodeMutation) Fields() []string {
+	fields := make([]string, 0, 0)
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *AuthorizationCodeMutation) Field(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *AuthorizationCodeMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	return nil, fmt.Errorf("unknown AuthorizationCode field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *AuthorizationCodeMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown AuthorizationCode field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *AuthorizationCodeMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *AuthorizationCodeMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *AuthorizationCodeMutation) AddField(name string, value ent.Value) error {
+	return fmt.Errorf("unknown AuthorizationCode numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *AuthorizationCodeMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *AuthorizationCodeMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *AuthorizationCodeMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown AuthorizationCode nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *AuthorizationCodeMutation) ResetField(name string) error {
+	return fmt.Errorf("unknown AuthorizationCode field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *AuthorizationCodeMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *AuthorizationCodeMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *AuthorizationCodeMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *AuthorizationCodeMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *AuthorizationCodeMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *AuthorizationCodeMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *AuthorizationCodeMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown AuthorizationCode unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *AuthorizationCodeMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown AuthorizationCode edge %s", name)
+}
 
 // OAuthClientMutation represents an operation that mutates the OAuthClient nodes in the graph.
 type OAuthClientMutation struct {
@@ -36,8 +286,12 @@ type OAuthClientMutation struct {
 	op            Op
 	typ           string
 	id            *int
+	client_id     *string
 	client_secret *string
-	url           *string
+	client_type   *string
+	client_name   *string
+	redirect_uri  *string
+	scope         *string
 	clearedFields map[string]struct{}
 	done          bool
 	oldValue      func(context.Context) (*OAuthClient, error)
@@ -142,6 +396,42 @@ func (m *OAuthClientMutation) IDs(ctx context.Context) ([]int, error) {
 	}
 }
 
+// SetClientID sets the "client_id" field.
+func (m *OAuthClientMutation) SetClientID(s string) {
+	m.client_id = &s
+}
+
+// ClientID returns the value of the "client_id" field in the mutation.
+func (m *OAuthClientMutation) ClientID() (r string, exists bool) {
+	v := m.client_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldClientID returns the old "client_id" field's value of the OAuthClient entity.
+// If the OAuthClient object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OAuthClientMutation) OldClientID(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldClientID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldClientID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldClientID: %w", err)
+	}
+	return oldValue.ClientID, nil
+}
+
+// ResetClientID resets all changes to the "client_id" field.
+func (m *OAuthClientMutation) ResetClientID() {
+	m.client_id = nil
+}
+
 // SetClientSecret sets the "client_secret" field.
 func (m *OAuthClientMutation) SetClientSecret(s string) {
 	m.client_secret = &s
@@ -178,40 +468,148 @@ func (m *OAuthClientMutation) ResetClientSecret() {
 	m.client_secret = nil
 }
 
-// SetURL sets the "url" field.
-func (m *OAuthClientMutation) SetURL(s string) {
-	m.url = &s
+// SetClientType sets the "client_type" field.
+func (m *OAuthClientMutation) SetClientType(s string) {
+	m.client_type = &s
 }
 
-// URL returns the value of the "url" field in the mutation.
-func (m *OAuthClientMutation) URL() (r string, exists bool) {
-	v := m.url
+// ClientType returns the value of the "client_type" field in the mutation.
+func (m *OAuthClientMutation) ClientType() (r string, exists bool) {
+	v := m.client_type
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldURL returns the old "url" field's value of the OAuthClient entity.
+// OldClientType returns the old "client_type" field's value of the OAuthClient entity.
 // If the OAuthClient object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OAuthClientMutation) OldURL(ctx context.Context) (v string, err error) {
+func (m *OAuthClientMutation) OldClientType(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldURL is only allowed on UpdateOne operations")
+		return v, errors.New("OldClientType is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldURL requires an ID field in the mutation")
+		return v, errors.New("OldClientType requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldURL: %w", err)
+		return v, fmt.Errorf("querying old value for OldClientType: %w", err)
 	}
-	return oldValue.URL, nil
+	return oldValue.ClientType, nil
 }
 
-// ResetURL resets all changes to the "url" field.
-func (m *OAuthClientMutation) ResetURL() {
-	m.url = nil
+// ResetClientType resets all changes to the "client_type" field.
+func (m *OAuthClientMutation) ResetClientType() {
+	m.client_type = nil
+}
+
+// SetClientName sets the "client_name" field.
+func (m *OAuthClientMutation) SetClientName(s string) {
+	m.client_name = &s
+}
+
+// ClientName returns the value of the "client_name" field in the mutation.
+func (m *OAuthClientMutation) ClientName() (r string, exists bool) {
+	v := m.client_name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldClientName returns the old "client_name" field's value of the OAuthClient entity.
+// If the OAuthClient object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OAuthClientMutation) OldClientName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldClientName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldClientName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldClientName: %w", err)
+	}
+	return oldValue.ClientName, nil
+}
+
+// ResetClientName resets all changes to the "client_name" field.
+func (m *OAuthClientMutation) ResetClientName() {
+	m.client_name = nil
+}
+
+// SetRedirectURI sets the "redirect_uri" field.
+func (m *OAuthClientMutation) SetRedirectURI(s string) {
+	m.redirect_uri = &s
+}
+
+// RedirectURI returns the value of the "redirect_uri" field in the mutation.
+func (m *OAuthClientMutation) RedirectURI() (r string, exists bool) {
+	v := m.redirect_uri
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRedirectURI returns the old "redirect_uri" field's value of the OAuthClient entity.
+// If the OAuthClient object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OAuthClientMutation) OldRedirectURI(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRedirectURI is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRedirectURI requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRedirectURI: %w", err)
+	}
+	return oldValue.RedirectURI, nil
+}
+
+// ResetRedirectURI resets all changes to the "redirect_uri" field.
+func (m *OAuthClientMutation) ResetRedirectURI() {
+	m.redirect_uri = nil
+}
+
+// SetScope sets the "scope" field.
+func (m *OAuthClientMutation) SetScope(s string) {
+	m.scope = &s
+}
+
+// Scope returns the value of the "scope" field in the mutation.
+func (m *OAuthClientMutation) Scope() (r string, exists bool) {
+	v := m.scope
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldScope returns the old "scope" field's value of the OAuthClient entity.
+// If the OAuthClient object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OAuthClientMutation) OldScope(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldScope is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldScope requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldScope: %w", err)
+	}
+	return oldValue.Scope, nil
+}
+
+// ResetScope resets all changes to the "scope" field.
+func (m *OAuthClientMutation) ResetScope() {
+	m.scope = nil
 }
 
 // Where appends a list predicates to the OAuthClientMutation builder.
@@ -233,12 +631,24 @@ func (m *OAuthClientMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *OAuthClientMutation) Fields() []string {
-	fields := make([]string, 0, 2)
+	fields := make([]string, 0, 6)
+	if m.client_id != nil {
+		fields = append(fields, oauthclient.FieldClientID)
+	}
 	if m.client_secret != nil {
 		fields = append(fields, oauthclient.FieldClientSecret)
 	}
-	if m.url != nil {
-		fields = append(fields, oauthclient.FieldURL)
+	if m.client_type != nil {
+		fields = append(fields, oauthclient.FieldClientType)
+	}
+	if m.client_name != nil {
+		fields = append(fields, oauthclient.FieldClientName)
+	}
+	if m.redirect_uri != nil {
+		fields = append(fields, oauthclient.FieldRedirectURI)
+	}
+	if m.scope != nil {
+		fields = append(fields, oauthclient.FieldScope)
 	}
 	return fields
 }
@@ -248,10 +658,18 @@ func (m *OAuthClientMutation) Fields() []string {
 // schema.
 func (m *OAuthClientMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case oauthclient.FieldClientID:
+		return m.ClientID()
 	case oauthclient.FieldClientSecret:
 		return m.ClientSecret()
-	case oauthclient.FieldURL:
-		return m.URL()
+	case oauthclient.FieldClientType:
+		return m.ClientType()
+	case oauthclient.FieldClientName:
+		return m.ClientName()
+	case oauthclient.FieldRedirectURI:
+		return m.RedirectURI()
+	case oauthclient.FieldScope:
+		return m.Scope()
 	}
 	return nil, false
 }
@@ -261,10 +679,18 @@ func (m *OAuthClientMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *OAuthClientMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case oauthclient.FieldClientID:
+		return m.OldClientID(ctx)
 	case oauthclient.FieldClientSecret:
 		return m.OldClientSecret(ctx)
-	case oauthclient.FieldURL:
-		return m.OldURL(ctx)
+	case oauthclient.FieldClientType:
+		return m.OldClientType(ctx)
+	case oauthclient.FieldClientName:
+		return m.OldClientName(ctx)
+	case oauthclient.FieldRedirectURI:
+		return m.OldRedirectURI(ctx)
+	case oauthclient.FieldScope:
+		return m.OldScope(ctx)
 	}
 	return nil, fmt.Errorf("unknown OAuthClient field %s", name)
 }
@@ -274,6 +700,13 @@ func (m *OAuthClientMutation) OldField(ctx context.Context, name string) (ent.Va
 // type.
 func (m *OAuthClientMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case oauthclient.FieldClientID:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetClientID(v)
+		return nil
 	case oauthclient.FieldClientSecret:
 		v, ok := value.(string)
 		if !ok {
@@ -281,12 +714,33 @@ func (m *OAuthClientMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetClientSecret(v)
 		return nil
-	case oauthclient.FieldURL:
+	case oauthclient.FieldClientType:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetURL(v)
+		m.SetClientType(v)
+		return nil
+	case oauthclient.FieldClientName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetClientName(v)
+		return nil
+	case oauthclient.FieldRedirectURI:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRedirectURI(v)
+		return nil
+	case oauthclient.FieldScope:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetScope(v)
 		return nil
 	}
 	return fmt.Errorf("unknown OAuthClient field %s", name)
@@ -337,11 +791,23 @@ func (m *OAuthClientMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *OAuthClientMutation) ResetField(name string) error {
 	switch name {
+	case oauthclient.FieldClientID:
+		m.ResetClientID()
+		return nil
 	case oauthclient.FieldClientSecret:
 		m.ResetClientSecret()
 		return nil
-	case oauthclient.FieldURL:
-		m.ResetURL()
+	case oauthclient.FieldClientType:
+		m.ResetClientType()
+		return nil
+	case oauthclient.FieldClientName:
+		m.ResetClientName()
+		return nil
+	case oauthclient.FieldRedirectURI:
+		m.ResetRedirectURI()
+		return nil
+	case oauthclient.FieldScope:
+		m.ResetScope()
 		return nil
 	}
 	return fmt.Errorf("unknown OAuthClient field %s", name)

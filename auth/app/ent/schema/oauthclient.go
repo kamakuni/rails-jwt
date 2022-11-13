@@ -13,8 +13,12 @@ type OAuthClient struct {
 // Fields of the OAuthClient.
 func (OAuthClient) Fields() []ent.Field {
 	return []ent.Field{
+		field.String("client_id").NotEmpty(),
 		field.String("client_secret").NotEmpty(),
-		field.String("url").NotEmpty(),
+		field.String("client_type").NotEmpty(),
+		field.String("client_name").NotEmpty(),
+		field.String("redirect_uri").NotEmpty(),
+		field.String("scope").NotEmpty(),
 	}
 }
 

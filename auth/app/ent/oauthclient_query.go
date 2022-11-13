@@ -253,12 +253,12 @@ func (ocq *OAuthClientQuery) Clone() *OAuthClientQuery {
 // Example:
 //
 //	var v []struct {
-//		ClientSecret string `json:"client_secret,omitempty"`
+//		ClientID string `json:"client_id,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.OAuthClient.Query().
-//		GroupBy(oauthclient.FieldClientSecret).
+//		GroupBy(oauthclient.FieldClientID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (ocq *OAuthClientQuery) GroupBy(field string, fields ...string) *OAuthClientGroupBy {
@@ -281,11 +281,11 @@ func (ocq *OAuthClientQuery) GroupBy(field string, fields ...string) *OAuthClien
 // Example:
 //
 //	var v []struct {
-//		ClientSecret string `json:"client_secret,omitempty"`
+//		ClientID string `json:"client_id,omitempty"`
 //	}
 //
 //	client.OAuthClient.Query().
-//		Select(oauthclient.FieldClientSecret).
+//		Select(oauthclient.FieldClientID).
 //		Scan(ctx, &v)
 func (ocq *OAuthClientQuery) Select(fields ...string) *OAuthClientSelect {
 	ocq.fields = append(ocq.fields, fields...)

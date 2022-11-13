@@ -10,6 +10,7 @@ import (
 
 	"github.com/kamakuni/rails-jwt/auth/app/ent/migrate"
 
+	"github.com/kamakuni/rails-jwt/auth/app/ent/authorizationcode"
 	"github.com/kamakuni/rails-jwt/auth/app/ent/oauthclient"
 	"github.com/kamakuni/rails-jwt/auth/app/ent/refreshtoken"
 	"github.com/kamakuni/rails-jwt/auth/app/ent/user"
@@ -23,6 +24,8 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
+	// AuthorizationCode is the client for interacting with the AuthorizationCode builders.
+	AuthorizationCode *AuthorizationCodeClient
 	// OAuthClient is the client for interacting with the OAuthClient builders.
 	OAuthClient *OAuthClientClient
 	// RefreshToken is the client for interacting with the RefreshToken builders.
@@ -42,6 +45,7 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
+	c.AuthorizationCode = NewAuthorizationCodeClient(c.config)
 	c.OAuthClient = NewOAuthClientClient(c.config)
 	c.RefreshToken = NewRefreshTokenClient(c.config)
 	c.User = NewUserClient(c.config)
@@ -76,11 +80,12 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:          ctx,
-		config:       cfg,
-		OAuthClient:  NewOAuthClientClient(cfg),
-		RefreshToken: NewRefreshTokenClient(cfg),
-		User:         NewUserClient(cfg),
+		ctx:               ctx,
+		config:            cfg,
+		AuthorizationCode: NewAuthorizationCodeClient(cfg),
+		OAuthClient:       NewOAuthClientClient(cfg),
+		RefreshToken:      NewRefreshTokenClient(cfg),
+		User:              NewUserClient(cfg),
 	}, nil
 }
 
@@ -98,18 +103,19 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:          ctx,
-		config:       cfg,
-		OAuthClient:  NewOAuthClientClient(cfg),
-		RefreshToken: NewRefreshTokenClient(cfg),
-		User:         NewUserClient(cfg),
+		ctx:               ctx,
+		config:            cfg,
+		AuthorizationCode: NewAuthorizationCodeClient(cfg),
+		OAuthClient:       NewOAuthClientClient(cfg),
+		RefreshToken:      NewRefreshTokenClient(cfg),
+		User:              NewUserClient(cfg),
 	}, nil
 }
 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		OAuthClient.
+//		AuthorizationCode.
 //		Query().
 //		Count(ctx)
 func (c *Client) Debug() *Client {
@@ -131,9 +137,100 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
+	c.AuthorizationCode.Use(hooks...)
 	c.OAuthClient.Use(hooks...)
 	c.RefreshToken.Use(hooks...)
 	c.User.Use(hooks...)
+}
+
+// AuthorizationCodeClient is a client for the AuthorizationCode schema.
+type AuthorizationCodeClient struct {
+	config
+}
+
+// NewAuthorizationCodeClient returns a client for the AuthorizationCode from the given config.
+func NewAuthorizationCodeClient(c config) *AuthorizationCodeClient {
+	return &AuthorizationCodeClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `authorizationcode.Hooks(f(g(h())))`.
+func (c *AuthorizationCodeClient) Use(hooks ...Hook) {
+	c.hooks.AuthorizationCode = append(c.hooks.AuthorizationCode, hooks...)
+}
+
+// Create returns a builder for creating a AuthorizationCode entity.
+func (c *AuthorizationCodeClient) Create() *AuthorizationCodeCreate {
+	mutation := newAuthorizationCodeMutation(c.config, OpCreate)
+	return &AuthorizationCodeCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of AuthorizationCode entities.
+func (c *AuthorizationCodeClient) CreateBulk(builders ...*AuthorizationCodeCreate) *AuthorizationCodeCreateBulk {
+	return &AuthorizationCodeCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for AuthorizationCode.
+func (c *AuthorizationCodeClient) Update() *AuthorizationCodeUpdate {
+	mutation := newAuthorizationCodeMutation(c.config, OpUpdate)
+	return &AuthorizationCodeUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *AuthorizationCodeClient) UpdateOne(ac *AuthorizationCode) *AuthorizationCodeUpdateOne {
+	mutation := newAuthorizationCodeMutation(c.config, OpUpdateOne, withAuthorizationCode(ac))
+	return &AuthorizationCodeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *AuthorizationCodeClient) UpdateOneID(id int) *AuthorizationCodeUpdateOne {
+	mutation := newAuthorizationCodeMutation(c.config, OpUpdateOne, withAuthorizationCodeID(id))
+	return &AuthorizationCodeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for AuthorizationCode.
+func (c *AuthorizationCodeClient) Delete() *AuthorizationCodeDelete {
+	mutation := newAuthorizationCodeMutation(c.config, OpDelete)
+	return &AuthorizationCodeDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *AuthorizationCodeClient) DeleteOne(ac *AuthorizationCode) *AuthorizationCodeDeleteOne {
+	return c.DeleteOneID(ac.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *AuthorizationCodeClient) DeleteOneID(id int) *AuthorizationCodeDeleteOne {
+	builder := c.Delete().Where(authorizationcode.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &AuthorizationCodeDeleteOne{builder}
+}
+
+// Query returns a query builder for AuthorizationCode.
+func (c *AuthorizationCodeClient) Query() *AuthorizationCodeQuery {
+	return &AuthorizationCodeQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a AuthorizationCode entity by its id.
+func (c *AuthorizationCodeClient) Get(ctx context.Context, id int) (*AuthorizationCode, error) {
+	return c.Query().Where(authorizationcode.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *AuthorizationCodeClient) GetX(ctx context.Context, id int) *AuthorizationCode {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *AuthorizationCodeClient) Hooks() []Hook {
+	return c.hooks.AuthorizationCode
 }
 
 // OAuthClientClient is a client for the OAuthClient schema.

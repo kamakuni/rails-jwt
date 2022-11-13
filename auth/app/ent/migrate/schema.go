@@ -8,11 +8,25 @@ import (
 )
 
 var (
+	// AuthorizationCodesColumns holds the columns for the "authorization_codes" table.
+	AuthorizationCodesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+	}
+	// AuthorizationCodesTable holds the schema information for the "authorization_codes" table.
+	AuthorizationCodesTable = &schema.Table{
+		Name:       "authorization_codes",
+		Columns:    AuthorizationCodesColumns,
+		PrimaryKey: []*schema.Column{AuthorizationCodesColumns[0]},
+	}
 	// OauthClientsColumns holds the columns for the "oauth_clients" table.
 	OauthClientsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "client_id", Type: field.TypeString},
 		{Name: "client_secret", Type: field.TypeString},
-		{Name: "url", Type: field.TypeString},
+		{Name: "client_type", Type: field.TypeString},
+		{Name: "client_name", Type: field.TypeString},
+		{Name: "redirect_uri", Type: field.TypeString},
+		{Name: "scope", Type: field.TypeString},
 	}
 	// OauthClientsTable holds the schema information for the "oauth_clients" table.
 	OauthClientsTable = &schema.Table{
@@ -46,6 +60,7 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		AuthorizationCodesTable,
 		OauthClientsTable,
 		RefreshTokensTable,
 		UsersTable,

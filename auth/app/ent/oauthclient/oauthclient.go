@@ -7,10 +7,18 @@ const (
 	Label = "oauth_client"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldClientID holds the string denoting the client_id field in the database.
+	FieldClientID = "client_id"
 	// FieldClientSecret holds the string denoting the client_secret field in the database.
 	FieldClientSecret = "client_secret"
-	// FieldURL holds the string denoting the url field in the database.
-	FieldURL = "url"
+	// FieldClientType holds the string denoting the client_type field in the database.
+	FieldClientType = "client_type"
+	// FieldClientName holds the string denoting the client_name field in the database.
+	FieldClientName = "client_name"
+	// FieldRedirectURI holds the string denoting the redirect_uri field in the database.
+	FieldRedirectURI = "redirect_uri"
+	// FieldScope holds the string denoting the scope field in the database.
+	FieldScope = "scope"
 	// Table holds the table name of the oauthclient in the database.
 	Table = "oauth_clients"
 )
@@ -18,8 +26,12 @@ const (
 // Columns holds all SQL columns for oauthclient fields.
 var Columns = []string{
 	FieldID,
+	FieldClientID,
 	FieldClientSecret,
-	FieldURL,
+	FieldClientType,
+	FieldClientName,
+	FieldRedirectURI,
+	FieldScope,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -33,8 +45,16 @@ func ValidColumn(column string) bool {
 }
 
 var (
+	// ClientIDValidator is a validator for the "client_id" field. It is called by the builders before save.
+	ClientIDValidator func(string) error
 	// ClientSecretValidator is a validator for the "client_secret" field. It is called by the builders before save.
 	ClientSecretValidator func(string) error
-	// URLValidator is a validator for the "url" field. It is called by the builders before save.
-	URLValidator func(string) error
+	// ClientTypeValidator is a validator for the "client_type" field. It is called by the builders before save.
+	ClientTypeValidator func(string) error
+	// ClientNameValidator is a validator for the "client_name" field. It is called by the builders before save.
+	ClientNameValidator func(string) error
+	// RedirectURIValidator is a validator for the "redirect_uri" field. It is called by the builders before save.
+	RedirectURIValidator func(string) error
+	// ScopeValidator is a validator for the "scope" field. It is called by the builders before save.
+	ScopeValidator func(string) error
 )

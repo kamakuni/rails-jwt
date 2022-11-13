@@ -6,6 +6,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
+// AuthorizationCode is the predicate function for authorizationcode builders.
+type AuthorizationCode func(*sql.Selector)
+
 // OAuthClient is the predicate function for oauthclient builders.
 type OAuthClient func(*sql.Selector)
 
