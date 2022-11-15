@@ -1,4 +1,4 @@
-package main
+package auth
 
 import (
 	"bytes"
@@ -9,15 +9,19 @@ import (
 	"os"
 	"testing"
 
-	"github.com/kamakuni/rails-jwt/auth/app/server"
+	"auth/server"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 var s *server.Server
 
 func TestMain(m *testing.M) {
-	client := Open("postgres://postgres:password@auth-db/postgres?sslmode=disable")
+	//client := Open("postgres://postgres:password@auth-db/postgres?sslmode=disable")
+	//client := enttest.Open(m., "sqlite3", "file:ent?mode=memory&cache=shared&_fk=1")
+	//defer client.Close()
 	secret, _ := server.ReadSecret("../certs/private.key")
-	s = server.NewAuthServer(client, ":8080", secret)
+	s = server.NewAuthServer(nil, ":8080", secret)
 	go func() {
 		log.Fatal(s.ListenAndServe())
 	}()
@@ -36,6 +40,10 @@ func TestNewAuthServer(t *testing.T) {
 type User struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
+}
+
+func TestClient(t *testing.T) {
+	client := enttest
 }
 
 func TestToken(t *testing.T) {

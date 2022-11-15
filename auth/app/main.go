@@ -1,4 +1,4 @@
-package main
+package auth
 
 import (
 	"context"
@@ -9,9 +9,10 @@ import (
 	"entgo.io/ent/dialect"
 	entsql "entgo.io/ent/dialect/sql"
 
+	"auth/ent"
+	"auth/server"
+
 	_ "github.com/jackc/pgx/v5/stdlib"
-	"github.com/kamakuni/rails-jwt/auth/app/ent"
-	"github.com/kamakuni/rails-jwt/auth/app/server"
 )
 
 // Open new connection

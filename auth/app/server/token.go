@@ -3,8 +3,9 @@ package server
 import (
 	"time"
 
+	"auth/uuid"
+
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/kamakuni/rails-jwt/auth/app/uuid"
 )
 
 func CreateAccessToken(userId string, now time.Time, secret string) (string, error) {

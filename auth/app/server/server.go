@@ -9,8 +9,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/kamakuni/rails-jwt/auth/app/constant"
-	"github.com/kamakuni/rails-jwt/auth/app/ent"
+	"auth/constant"
+	"auth/ent"
 )
 
 type Server struct {
