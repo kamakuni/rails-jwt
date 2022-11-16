@@ -3,11 +3,11 @@
 package ent
 
 import (
+	"auth/ent/user"
 	"fmt"
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/kamakuni/rails-jwt/auth/app/ent/user"
 )
 
 // User is the model entity for the User schema.

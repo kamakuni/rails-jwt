@@ -3,14 +3,14 @@
 package enttest
 
 import (
+	"auth/ent"
 	"context"
-
-	"github.com/kamakuni/rails-jwt/auth/app/ent"
 	// required by schema hooks.
-	_ "github.com/kamakuni/rails-jwt/auth/app/ent/runtime"
+	_ "auth/ent/runtime"
+
+	"auth/ent/migrate"
 
 	"entgo.io/ent/dialect/sql/schema"
-	"github.com/kamakuni/rails-jwt/auth/app/ent/migrate"
 )
 
 type (

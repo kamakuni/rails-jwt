@@ -3,8 +3,9 @@
 package user
 
 import (
+	"auth/ent/predicate"
+
 	"entgo.io/ent/dialect/sql"
-	"github.com/kamakuni/rails-jwt/auth/app/ent/predicate"
 )
 
 // ID filters vertices based on their ID field.

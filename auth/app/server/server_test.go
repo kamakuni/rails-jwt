@@ -1,27 +1,27 @@
-package auth
+package server
 
 import (
+	"auth/ent/enttest"
 	"bytes"
 	"encoding/json"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"testing"
 
-	"auth/server"
-
 	_ "github.com/mattn/go-sqlite3"
 )
 
-var s *server.Server
+var s *Server
 
 func TestMain(m *testing.M) {
 	//client := Open("postgres://postgres:password@auth-db/postgres?sslmode=disable")
 	//client := enttest.Open(m., "sqlite3", "file:ent?mode=memory&cache=shared&_fk=1")
 	//defer client.Close()
-	secret, _ := server.ReadSecret("../certs/private.key")
-	s = server.NewAuthServer(nil, ":8080", secret)
+	secret, _ := ReadSecret("../certs/private.key")
+	s = NewAuthServer(nil, ":8080", secret)
 	go func() {
 		log.Fatal(s.ListenAndServe())
 	}()
@@ -43,7 +43,14 @@ type User struct {
 }
 
 func TestClient(t *testing.T) {
-	client := enttest
+	client := enttest.Open(t, "sqlite3", "file:ent?mode=memory&cache=shared&_fk=1")
+	defer client.Close()
+	s.client = client
+	user := &User{
+		Email:    "test@example.com",
+		Password: "password",
+	}
+
 }
 
 func TestToken(t *testing.T) {
@@ -56,11 +63,11 @@ func TestToken(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		t.Error(err)
 	}
-	var responseJson server.Response
+	var responseJson Response
 	if err := json.Unmarshal(body, &responseJson); err != nil {
 		t.Error(err)
 	}

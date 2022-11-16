@@ -3,14 +3,14 @@
 package ent
 
 import (
+	"auth/ent/predicate"
+	"auth/ent/user"
 	"context"
 	"fmt"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/kamakuni/rails-jwt/auth/app/ent/predicate"
-	"github.com/kamakuni/rails-jwt/auth/app/ent/user"
 )
 
 // UserDelete is the builder for deleting a User entity.

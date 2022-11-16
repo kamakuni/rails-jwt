@@ -3,13 +3,13 @@
 package ent
 
 import (
+	"auth/ent/refreshtoken"
 	"context"
 	"errors"
 	"fmt"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/kamakuni/rails-jwt/auth/app/ent/refreshtoken"
 )
 
 // RefreshTokenCreate is the builder for creating a RefreshToken entity.

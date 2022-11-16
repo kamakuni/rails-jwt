@@ -3,6 +3,8 @@
 package ent
 
 import (
+	"auth/ent/predicate"
+	"auth/ent/refreshtoken"
 	"context"
 	"errors"
 	"fmt"
@@ -10,8 +12,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/kamakuni/rails-jwt/auth/app/ent/predicate"
-	"github.com/kamakuni/rails-jwt/auth/app/ent/refreshtoken"
 )
 
 // RefreshTokenUpdate is the builder for updating RefreshToken entities.

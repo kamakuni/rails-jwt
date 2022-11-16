@@ -3,11 +3,11 @@
 package ent
 
 import (
+	"auth/ent/refreshtoken"
 	"fmt"
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/kamakuni/rails-jwt/auth/app/ent/refreshtoken"
 )
 
 // RefreshToken is the model entity for the RefreshToken schema.

@@ -3,13 +3,13 @@
 package ent
 
 import (
+	"auth/ent/oauthclient"
 	"context"
 	"errors"
 	"fmt"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/kamakuni/rails-jwt/auth/app/ent/oauthclient"
 )
 
 // OAuthClientCreate is the builder for creating a OAuthClient entity.

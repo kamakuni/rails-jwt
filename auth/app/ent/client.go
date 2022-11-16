@@ -8,12 +8,12 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/kamakuni/rails-jwt/auth/app/ent/migrate"
+	"auth/ent/migrate"
 
-	"github.com/kamakuni/rails-jwt/auth/app/ent/authorizationcode"
-	"github.com/kamakuni/rails-jwt/auth/app/ent/oauthclient"
-	"github.com/kamakuni/rails-jwt/auth/app/ent/refreshtoken"
-	"github.com/kamakuni/rails-jwt/auth/app/ent/user"
+	"auth/ent/authorizationcode"
+	"auth/ent/oauthclient"
+	"auth/ent/refreshtoken"
+	"auth/ent/user"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"

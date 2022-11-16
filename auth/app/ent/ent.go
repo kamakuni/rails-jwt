@@ -3,6 +3,10 @@
 package ent
 
 import (
+	"auth/ent/authorizationcode"
+	"auth/ent/oauthclient"
+	"auth/ent/refreshtoken"
+	"auth/ent/user"
 	"context"
 	"errors"
 	"fmt"
@@ -10,10 +14,6 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/kamakuni/rails-jwt/auth/app/ent/authorizationcode"
-	"github.com/kamakuni/rails-jwt/auth/app/ent/oauthclient"
-	"github.com/kamakuni/rails-jwt/auth/app/ent/refreshtoken"
-	"github.com/kamakuni/rails-jwt/auth/app/ent/user"
 )
 
 // ent aliases to avoid import conflicts in user's code.

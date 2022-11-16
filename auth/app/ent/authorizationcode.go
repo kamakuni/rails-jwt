@@ -3,11 +3,11 @@
 package ent
 
 import (
+	"auth/ent/authorizationcode"
 	"fmt"
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/kamakuni/rails-jwt/auth/app/ent/authorizationcode"
 )
 
 // AuthorizationCode is the model entity for the AuthorizationCode schema.

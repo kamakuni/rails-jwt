@@ -3,11 +3,11 @@
 package ent
 
 import (
-	"github.com/kamakuni/rails-jwt/auth/app/ent/authorizationcode"
-	"github.com/kamakuni/rails-jwt/auth/app/ent/oauthclient"
-	"github.com/kamakuni/rails-jwt/auth/app/ent/refreshtoken"
-	"github.com/kamakuni/rails-jwt/auth/app/ent/schema"
-	"github.com/kamakuni/rails-jwt/auth/app/ent/user"
+	"auth/ent/authorizationcode"
+	"auth/ent/oauthclient"
+	"auth/ent/refreshtoken"
+	"auth/ent/schema"
+	"auth/ent/user"
 )
 
 // The init function reads all schema descriptors with runtime code

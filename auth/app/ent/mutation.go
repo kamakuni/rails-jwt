@@ -3,16 +3,15 @@
 package ent
 
 import (
+	"auth/ent/authorizationcode"
+	"auth/ent/oauthclient"
+	"auth/ent/predicate"
+	"auth/ent/refreshtoken"
+	"auth/ent/user"
 	"context"
 	"errors"
 	"fmt"
 	"sync"
-
-	"github.com/kamakuni/rails-jwt/auth/app/ent/authorizationcode"
-	"github.com/kamakuni/rails-jwt/auth/app/ent/oauthclient"
-	"github.com/kamakuni/rails-jwt/auth/app/ent/predicate"
-	"github.com/kamakuni/rails-jwt/auth/app/ent/refreshtoken"
-	"github.com/kamakuni/rails-jwt/auth/app/ent/user"
 
 	"entgo.io/ent"
 )

@@ -3,13 +3,13 @@
 package ent
 
 import (
+	"auth/ent/user"
 	"context"
 	"errors"
 	"fmt"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/kamakuni/rails-jwt/auth/app/ent/user"
 )
 
 // UserCreate is the builder for creating a User entity.

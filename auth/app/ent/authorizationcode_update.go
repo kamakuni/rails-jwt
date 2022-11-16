@@ -3,6 +3,8 @@
 package ent
 
 import (
+	"auth/ent/authorizationcode"
+	"auth/ent/predicate"
 	"context"
 	"errors"
 	"fmt"
@@ -10,8 +12,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/kamakuni/rails-jwt/auth/app/ent/authorizationcode"
-	"github.com/kamakuni/rails-jwt/auth/app/ent/predicate"
 )
 
 // AuthorizationCodeUpdate is the builder for updating AuthorizationCode entities.

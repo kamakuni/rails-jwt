@@ -3,10 +3,9 @@
 package hook
 
 import (
+	"auth/ent"
 	"context"
 	"fmt"
-
-	"github.com/kamakuni/rails-jwt/auth/app/ent"
 )
 
 // The AuthorizationCodeFunc type is an adapter to allow the use of ordinary

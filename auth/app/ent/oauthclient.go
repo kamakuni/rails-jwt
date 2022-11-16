@@ -3,11 +3,11 @@
 package ent
 
 import (
+	"auth/ent/oauthclient"
 	"fmt"
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/kamakuni/rails-jwt/auth/app/ent/oauthclient"
 )
 
 // OAuthClient is the model entity for the OAuthClient schema.
