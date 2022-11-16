@@ -46,11 +46,32 @@ func TestClient(t *testing.T) {
 	client := enttest.Open(t, "sqlite3", "file:ent?mode=memory&cache=shared&_fk=1")
 	defer client.Close()
 	s.client = client
-	user := &User{
-		Email:    "test@example.com",
-		Password: "password",
+	req := &RequestClient{
+		ClientName:  "javascript app",
+		RedirectURI: "https://localhost:3000/callback",
 	}
-
+	reqJSON, err := json.Marshal(req)
+	if err != nil {
+		t.Error(err)
+	}
+	res, err := http.Post("http://localhost:8080/api/v1/client", "application/json", bytes.NewBuffer(reqJSON))
+	if err != nil {
+		t.Error(err)
+	}
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		t.Error(err)
+	}
+	var resJSON ResponseClient
+	if err := json.Unmarshal(body, &resJSON); err != nil {
+		t.Error(err)
+	}
+	if resJSON.ClientID == "" {
+		t.Errorf("response has no ClientID.")
+	}
+	if resJSON.ClientName == "" {
+		t.Errorf("response has no ClientName.")
+	}
 }
 
 func TestToken(t *testing.T) {
