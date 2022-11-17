@@ -2,6 +2,7 @@ package server
 
 import (
 	"auth/ent/enttest"
+	"auth/ent/oauthclient"
 	"bytes"
 	"context"
 	"encoding/json"
@@ -16,7 +17,6 @@ import (
 )
 
 var s *Server
-var ctx context.Context
 
 func TestMain(m *testing.M) {
 	//client := Open("postgres://postgres:password@auth-db/postgres?sslmode=disable")
@@ -52,6 +52,7 @@ func TestClient(t *testing.T) {
 	req := &RequestClient{
 		ClientName:  "javascript app",
 		RedirectURI: "https://localhost:3000/callback",
+		Scope:       "read write",
 	}
 	reqJSON, err := json.Marshal(req)
 	if err != nil {
@@ -74,6 +75,13 @@ func TestClient(t *testing.T) {
 	}
 	if resJSON.ClientName == "" {
 		t.Errorf("response has no ClientName.")
+	}
+	ctx := context.Background()
+	exist, _ := s.client.OAuthClient.
+		Query().
+		Where(oauthclient.ClientNameEQ("javascript app")).Exist(ctx)
+	if !exist {
+		t.Errorf("OAuth client is not found.")
 	}
 }
 

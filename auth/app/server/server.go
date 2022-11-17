@@ -75,17 +75,24 @@ func NewAuthServer(ctx context.Context, client *ent.Client, addr string, secret 
 		}
 		clientName := jsonBody["client_name"].(string)
 		redirectURI := jsonBody["redirect_uri"].(string)
+		scope := jsonBody["scope"].(string)
 		if clientName == "" || redirectURI == "" {
 			http.Error(w, "", http.StatusBadRequest)
 			return
 		}
-		s.client.OAuthClient.
+		c, err := s.client.OAuthClient.
 			Create().
 			SetClientID(clientID).
 			SetClientName(clientName).
 			SetClientType(constant.Public.String()).
 			SetRedirectURI(redirectURI).
+			SetScope(scope).
 			Save(ctx)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		fmt.Printf("client: %v", c)
 		res := &ResponseClient{ClientID: clientID, ClientName: clientName}
 		buf, err := json.Marshal(res)
 		if err != nil {
