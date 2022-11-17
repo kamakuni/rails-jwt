@@ -3,6 +3,7 @@ package server
 import (
 	"auth/ent/enttest"
 	"bytes"
+	"context"
 	"encoding/json"
 	"io"
 	"io/ioutil"
@@ -15,13 +16,15 @@ import (
 )
 
 var s *Server
+var ctx context.Context
 
 func TestMain(m *testing.M) {
 	//client := Open("postgres://postgres:password@auth-db/postgres?sslmode=disable")
 	//client := enttest.Open(m., "sqlite3", "file:ent?mode=memory&cache=shared&_fk=1")
-	//defer client.Close()
+	//defer client.Close()s
+	ctx := context.Background()
 	secret, _ := ReadSecret("../certs/private.key")
-	s = NewAuthServer(nil, ":8080", secret)
+	s = NewAuthServer(ctx, nil, ":8080", secret)
 	go func() {
 		log.Fatal(s.ListenAndServe())
 	}()

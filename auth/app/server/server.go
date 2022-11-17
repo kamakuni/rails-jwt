@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -31,7 +32,13 @@ func ReadSecret(path string) (string, error) {
 	return string(data[:count]), nil
 }
 
-func NewAuthServer(client *ent.Client, addr string, secret string) *Server {
+func NewAuthServer(ctx context.Context, client *ent.Client, addr string, secret string) *Server {
+	s := &Server{
+		Server: &http.Server{
+			Addr: addr,
+		},
+		client: client,
+	}
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/v1/client", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
@@ -72,12 +79,13 @@ func NewAuthServer(client *ent.Client, addr string, secret string) *Server {
 			http.Error(w, "", http.StatusBadRequest)
 			return
 		}
-		client.OAuthClient.
+		s.client.OAuthClient.
 			Create().
 			SetClientID(clientID).
 			SetClientName(clientName).
 			SetClientType(constant.Public.String()).
-			SetRedirectURI(redirectURI)
+			SetRedirectURI(redirectURI).
+			Save(ctx)
 		res := &ResponseClient{ClientID: clientID, ClientName: clientName}
 		buf, err := json.Marshal(res)
 		if err != nil {
@@ -147,12 +155,6 @@ func NewAuthServer(client *ent.Client, addr string, secret string) *Server {
 	mux.HandleFunc("/api/v1/refresh", func(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, "refresh token")
 	})
-	s := &Server{
-		Server: &http.Server{
-			Addr:    addr,
-			Handler: mux,
-		},
-		client: client,
-	}
+	s.Handler = mux
 	return s
 }
