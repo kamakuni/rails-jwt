@@ -1,6 +1,6 @@
 package server
 
-type Response struct {
+type ResponseAuthorize struct {
 	AccessToken  string `json:"access_token"`
 	RefreshToken string `json:"refresh_token"`
 }

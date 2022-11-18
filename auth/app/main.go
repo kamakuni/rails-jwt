@@ -37,6 +37,6 @@ func main() {
 		log.Fatalf("error: %v", err)
 	}
 	secret, _ := server.ReadSecret("../certs/private.key")
-	s := server.NewAuthServer(client, ":8080", secret)
+	s := server.NewAuthServer(context.Background(), client, ":8080", secret)
 	log.Fatal(s.ListenAndServe())
 }
