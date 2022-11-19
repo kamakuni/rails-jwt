@@ -77,7 +77,7 @@ func NewAuthServer(ctx context.Context, client *ent.Client, addr string, secret 
 		redirectURI := jsonBody["redirect_uri"].(string)
 		scope := jsonBody["scope"].(string)
 		if clientName == "" || redirectURI == "" {
-			http.Error(w, "", http.StatusBadRequest)
+			http.Error(w, "", http.StatusUnprocessableEntity)
 			return
 		}
 		c, err := s.client.OAuthClient.
@@ -133,11 +133,9 @@ func NewAuthServer(ctx context.Context, client *ent.Client, addr string, secret 
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		email := jsonBody["email"]
-		password := jsonBody["password"]
-		if email != "test@example.com" || password != "password" {
-			w.WriteHeader(http.StatusUnauthorized)
-			return
+		responseType := jsonBody["response_type"].(string)
+		if responseType != "" {
+			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
 		}
 		fmt.Printf("%v\n", jsonBody)
 		accessToken, err := CreateAccessToken("", time.Now(), secret)
