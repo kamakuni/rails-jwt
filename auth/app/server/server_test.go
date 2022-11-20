@@ -1,6 +1,7 @@
 package server
 
 import (
+	"auth/constant"
 	"auth/ent/enttest"
 	"auth/ent/oauthclient"
 	"bytes"
@@ -10,7 +11,9 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
+	"strings"
 	"testing"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -45,20 +48,37 @@ type User struct {
 	Password string `json:"password"`
 }
 
+func newHTTPClientWithoutRedirect() *http.Client {
+	c := &http.Client{}
+	c.CheckRedirect = func(req *http.Request, via []*http.Request) error {
+		return http.ErrUseLastResponse
+	}
+	return c
+}
+
+func createOAuthClient(clientName string, redirectURI string, scope string) (resp *http.Response, err error) {
+	req := &RequestClient{
+		ClientName:  clientName,
+		RedirectURI: redirectURI,
+		Scope:       scope,
+	}
+	reqJSON, err := json.Marshal(req)
+	if err != nil {
+		return nil, err
+	}
+	res, err := http.Post("http://localhost:8080/api/v1/client", "application/json", bytes.NewBuffer(reqJSON))
+	if err != nil {
+		return nil, err
+	}
+	return res, err
+}
+
 func TestClient(t *testing.T) {
 	client := enttest.Open(t, "sqlite3", "file:ent?mode=memory&cache=shared&_fk=1")
 	defer client.Close()
 	s.client = client
-	req := &RequestClient{
-		ClientName:  "javascript app",
-		RedirectURI: "https://localhost:3000/callback",
-		Scope:       "read write",
-	}
-	reqJSON, err := json.Marshal(req)
-	if err != nil {
-		t.Error(err)
-	}
-	res, err := http.Post("http://localhost:8080/api/v1/client", "application/json", bytes.NewBuffer(reqJSON))
+
+	res, err := createOAuthClient("javascript app", "https://localhost:3000/callback", "read write")
 	if err != nil {
 		t.Error(err)
 	}
@@ -85,29 +105,36 @@ func TestClient(t *testing.T) {
 	}
 }
 
-func TestToken(t *testing.T) {
-	user := &User{
-		Email:    "test@example.com",
-		Password: "password",
-	}
-	userJson, _ := json.Marshal(user)
-	res, err := http.Post("http://localhost:8080/api/v1/token", "application/json", bytes.NewBuffer(userJson))
-	if err != nil {
+func TestAuthorize(t *testing.T) {
+
+	client := enttest.Open(t, "sqlite3", "file:ent?mode=memory&cache=shared&_fk=1")
+	s.client = client
+	defer client.Close()
+
+	res, _ := createOAuthClient("javascript app", "https://localhost:3000/callback", "read write")
+	body, _ := io.ReadAll(res.Body)
+	var resJSON ResponseClient
+	if err := json.Unmarshal(body, &resJSON); err != nil {
 		t.Error(err)
 	}
-	body, err := io.ReadAll(res.Body)
-	if err != nil {
-		t.Error(err)
+
+	u, _ := url.Parse("http://localhost:8080/api/v1/authorize")
+	params := u.Query()
+	params.Add(constant.ResponseType.String(), constant.Code.String())
+	params.Add(constant.Scope.String(), "read")
+	params.Add(constant.State.String(), "abc")
+	params.Add(constant.ClientID.String(), resJSON.ClientID)
+	u.RawQuery = params.Encode()
+
+	httpClient := newHTTPClientWithoutRedirect()
+	req, _ := http.NewRequest(http.MethodGet, u.String(), nil)
+	res, _ = httpClient.Do(req)
+	l := res.Header.Get("Location")
+	if !strings.HasPrefix(l, "https://localhost:3000/callback?code=") {
+		t.Error("Unexpected redirect uri.")
 	}
-	var responseJson Response
-	if err := json.Unmarshal(body, &responseJson); err != nil {
-		t.Error(err)
-	}
-	if responseJson.AccessToken == "" {
-		t.Errorf("response has no AccessToken.")
-	}
-	if responseJson.RefreshToken == "" {
-		t.Errorf("response has no RefreshToken.")
+	if res.StatusCode != 302 {
+		t.Error("Unexpected status code.")
 	}
 }
 

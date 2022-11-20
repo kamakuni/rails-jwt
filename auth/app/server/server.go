@@ -6,12 +6,13 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"os"
 	"strconv"
-	"time"
 
 	"auth/constant"
 	"auth/ent"
+	"auth/ent/oauthclient"
 )
 
 type Server struct {
@@ -105,58 +106,59 @@ func NewAuthServer(ctx context.Context, client *ent.Client, addr string, secret 
 		return
 	})
 	mux.HandleFunc("/api/v1/authorize", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
+		if r.Method != http.MethodGet {
 			w.WriteHeader(http.StatusMethodNotAllowed)
 			return
 		}
-		if r.Header.Get("Content-Type") != "application/json" {
-			w.WriteHeader(http.StatusBadRequest)
+		params := r.URL.Query()
+		responseType := params.Get("response_type")
+		if responseType != constant.Code.String() {
+			http.Error(w, "", http.StatusInternalServerError)
 			return
 		}
-
-		length, err := strconv.Atoi(r.Header.Get("Content-Length"))
+		clientID := params.Get("client_id")
+		state := params.Get("state")
+		//scope := params.Get("scope")
+		c, err := s.client.OAuthClient.Query().
+			Where(oauthclient.ClientID(clientID)).
+			Only(ctx)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-
-		body := make([]byte, length)
-		length, err = r.Body.Read(body)
-		if err != nil && err != io.EOF {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		var jsonBody map[string]interface{}
-		err = json.Unmarshal(body[:length], &jsonBody)
+		redirectURI, err := url.Parse(c.RedirectURI)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		responseType := jsonBody["response_type"].(string)
-		if responseType != "" {
-			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
-		}
-		fmt.Printf("%v\n", jsonBody)
-		accessToken, err := CreateAccessToken("", time.Now(), secret)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
-		refreshToken, err := CreateRefreshToken()
+		values := redirectURI.Query()
+		code, err := CreateCode()
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		bytes, err := json.Marshal(&ResponseAuthorize{
-			AccessToken:  accessToken,
-			RefreshToken: refreshToken,
-		})
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		w.WriteHeader(http.StatusOK)
-		io.WriteString(w, string(bytes))
+		values.Add(constant.Code.String(), code)
+		values.Add("state", state)
+		redirectURI.RawQuery = values.Encode()
+		//accessToken, err := CreateAccessToken("", time.Now(), secret)
+		//if err != nil {
+		//	http.Error(w, err.Error(), http.StatusInternalServerError)
+		//}
+		//refreshToken, err := CreateRefreshToken()
+		//if err != nil {
+		//	http.Error(w, err.Error(), http.StatusInternalServerError)
+		//	return
+		//}
+		//bytes, err := json.Marshal(&ResponseAuthorize{
+		//	AccessToken:  accessToken,
+		//	RefreshToken: refreshToken,
+		//})
+		//if err != nil {
+		//	http.Error(w, err.Error(), http.StatusInternalServerError)
+		//	return
+		//}
+		w.Header().Add("Location", redirectURI.String())
+		w.WriteHeader(http.StatusFound)
 		return
 	})
 	mux.HandleFunc("/api/v1/refresh", func(w http.ResponseWriter, r *http.Request) {
