@@ -12,6 +12,7 @@ import (
 	"errors"
 	"fmt"
 	"sync"
+	"time"
 
 	"entgo.io/ent"
 )
@@ -38,8 +39,8 @@ type AuthorizationCodeMutation struct {
 	typ           string
 	id            *int
 	client_id     *string
-	user_id       *string
-	scopes        *string
+	code          *string
+	issued        *time.Time
 	clearedFields map[string]struct{}
 	done          bool
 	oldValue      func(context.Context) (*AuthorizationCode, error)
@@ -180,76 +181,76 @@ func (m *AuthorizationCodeMutation) ResetClientID() {
 	m.client_id = nil
 }
 
-// SetUserID sets the "user_id" field.
-func (m *AuthorizationCodeMutation) SetUserID(s string) {
-	m.user_id = &s
+// SetCode sets the "code" field.
+func (m *AuthorizationCodeMutation) SetCode(s string) {
+	m.code = &s
 }
 
-// UserID returns the value of the "user_id" field in the mutation.
-func (m *AuthorizationCodeMutation) UserID() (r string, exists bool) {
-	v := m.user_id
+// Code returns the value of the "code" field in the mutation.
+func (m *AuthorizationCodeMutation) Code() (r string, exists bool) {
+	v := m.code
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldUserID returns the old "user_id" field's value of the AuthorizationCode entity.
+// OldCode returns the old "code" field's value of the AuthorizationCode entity.
 // If the AuthorizationCode object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AuthorizationCodeMutation) OldUserID(ctx context.Context) (v string, err error) {
+func (m *AuthorizationCodeMutation) OldCode(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUserID is only allowed on UpdateOne operations")
+		return v, errors.New("OldCode is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUserID requires an ID field in the mutation")
+		return v, errors.New("OldCode requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUserID: %w", err)
+		return v, fmt.Errorf("querying old value for OldCode: %w", err)
 	}
-	return oldValue.UserID, nil
+	return oldValue.Code, nil
 }
 
-// ResetUserID resets all changes to the "user_id" field.
-func (m *AuthorizationCodeMutation) ResetUserID() {
-	m.user_id = nil
+// ResetCode resets all changes to the "code" field.
+func (m *AuthorizationCodeMutation) ResetCode() {
+	m.code = nil
 }
 
-// SetScopes sets the "scopes" field.
-func (m *AuthorizationCodeMutation) SetScopes(s string) {
-	m.scopes = &s
+// SetIssued sets the "issued" field.
+func (m *AuthorizationCodeMutation) SetIssued(t time.Time) {
+	m.issued = &t
 }
 
-// Scopes returns the value of the "scopes" field in the mutation.
-func (m *AuthorizationCodeMutation) Scopes() (r string, exists bool) {
-	v := m.scopes
+// Issued returns the value of the "issued" field in the mutation.
+func (m *AuthorizationCodeMutation) Issued() (r time.Time, exists bool) {
+	v := m.issued
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldScopes returns the old "scopes" field's value of the AuthorizationCode entity.
+// OldIssued returns the old "issued" field's value of the AuthorizationCode entity.
 // If the AuthorizationCode object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AuthorizationCodeMutation) OldScopes(ctx context.Context) (v string, err error) {
+func (m *AuthorizationCodeMutation) OldIssued(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldScopes is only allowed on UpdateOne operations")
+		return v, errors.New("OldIssued is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldScopes requires an ID field in the mutation")
+		return v, errors.New("OldIssued requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldScopes: %w", err)
+		return v, fmt.Errorf("querying old value for OldIssued: %w", err)
 	}
-	return oldValue.Scopes, nil
+	return oldValue.Issued, nil
 }
 
-// ResetScopes resets all changes to the "scopes" field.
-func (m *AuthorizationCodeMutation) ResetScopes() {
-	m.scopes = nil
+// ResetIssued resets all changes to the "issued" field.
+func (m *AuthorizationCodeMutation) ResetIssued() {
+	m.issued = nil
 }
 
 // Where appends a list predicates to the AuthorizationCodeMutation builder.
@@ -275,11 +276,11 @@ func (m *AuthorizationCodeMutation) Fields() []string {
 	if m.client_id != nil {
 		fields = append(fields, authorizationcode.FieldClientID)
 	}
-	if m.user_id != nil {
-		fields = append(fields, authorizationcode.FieldUserID)
+	if m.code != nil {
+		fields = append(fields, authorizationcode.FieldCode)
 	}
-	if m.scopes != nil {
-		fields = append(fields, authorizationcode.FieldScopes)
+	if m.issued != nil {
+		fields = append(fields, authorizationcode.FieldIssued)
 	}
 	return fields
 }
@@ -291,10 +292,10 @@ func (m *AuthorizationCodeMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case authorizationcode.FieldClientID:
 		return m.ClientID()
-	case authorizationcode.FieldUserID:
-		return m.UserID()
-	case authorizationcode.FieldScopes:
-		return m.Scopes()
+	case authorizationcode.FieldCode:
+		return m.Code()
+	case authorizationcode.FieldIssued:
+		return m.Issued()
 	}
 	return nil, false
 }
@@ -306,10 +307,10 @@ func (m *AuthorizationCodeMutation) OldField(ctx context.Context, name string) (
 	switch name {
 	case authorizationcode.FieldClientID:
 		return m.OldClientID(ctx)
-	case authorizationcode.FieldUserID:
-		return m.OldUserID(ctx)
-	case authorizationcode.FieldScopes:
-		return m.OldScopes(ctx)
+	case authorizationcode.FieldCode:
+		return m.OldCode(ctx)
+	case authorizationcode.FieldIssued:
+		return m.OldIssued(ctx)
 	}
 	return nil, fmt.Errorf("unknown AuthorizationCode field %s", name)
 }
@@ -326,19 +327,19 @@ func (m *AuthorizationCodeMutation) SetField(name string, value ent.Value) error
 		}
 		m.SetClientID(v)
 		return nil
-	case authorizationcode.FieldUserID:
+	case authorizationcode.FieldCode:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetUserID(v)
+		m.SetCode(v)
 		return nil
-	case authorizationcode.FieldScopes:
-		v, ok := value.(string)
+	case authorizationcode.FieldIssued:
+		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetScopes(v)
+		m.SetIssued(v)
 		return nil
 	}
 	return fmt.Errorf("unknown AuthorizationCode field %s", name)
@@ -392,11 +393,11 @@ func (m *AuthorizationCodeMutation) ResetField(name string) error {
 	case authorizationcode.FieldClientID:
 		m.ResetClientID()
 		return nil
-	case authorizationcode.FieldUserID:
-		m.ResetUserID()
+	case authorizationcode.FieldCode:
+		m.ResetCode()
 		return nil
-	case authorizationcode.FieldScopes:
-		m.ResetScopes()
+	case authorizationcode.FieldIssued:
+		m.ResetIssued()
 		return nil
 	}
 	return fmt.Errorf("unknown AuthorizationCode field %s", name)

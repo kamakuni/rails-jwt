@@ -33,15 +33,9 @@ func (acu *AuthorizationCodeUpdate) SetClientID(s string) *AuthorizationCodeUpda
 	return acu
 }
 
-// SetUserID sets the "user_id" field.
-func (acu *AuthorizationCodeUpdate) SetUserID(s string) *AuthorizationCodeUpdate {
-	acu.mutation.SetUserID(s)
-	return acu
-}
-
-// SetScopes sets the "scopes" field.
-func (acu *AuthorizationCodeUpdate) SetScopes(s string) *AuthorizationCodeUpdate {
-	acu.mutation.SetScopes(s)
+// SetCode sets the "code" field.
+func (acu *AuthorizationCodeUpdate) SetCode(s string) *AuthorizationCodeUpdate {
+	acu.mutation.SetCode(s)
 	return acu
 }
 
@@ -117,14 +111,9 @@ func (acu *AuthorizationCodeUpdate) check() error {
 			return &ValidationError{Name: "client_id", err: fmt.Errorf(`ent: validator failed for field "AuthorizationCode.client_id": %w`, err)}
 		}
 	}
-	if v, ok := acu.mutation.UserID(); ok {
-		if err := authorizationcode.UserIDValidator(v); err != nil {
-			return &ValidationError{Name: "user_id", err: fmt.Errorf(`ent: validator failed for field "AuthorizationCode.user_id": %w`, err)}
-		}
-	}
-	if v, ok := acu.mutation.Scopes(); ok {
-		if err := authorizationcode.ScopesValidator(v); err != nil {
-			return &ValidationError{Name: "scopes", err: fmt.Errorf(`ent: validator failed for field "AuthorizationCode.scopes": %w`, err)}
+	if v, ok := acu.mutation.Code(); ok {
+		if err := authorizationcode.CodeValidator(v); err != nil {
+			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "AuthorizationCode.code": %w`, err)}
 		}
 	}
 	return nil
@@ -151,11 +140,8 @@ func (acu *AuthorizationCodeUpdate) sqlSave(ctx context.Context) (n int, err err
 	if value, ok := acu.mutation.ClientID(); ok {
 		_spec.SetField(authorizationcode.FieldClientID, field.TypeString, value)
 	}
-	if value, ok := acu.mutation.UserID(); ok {
-		_spec.SetField(authorizationcode.FieldUserID, field.TypeString, value)
-	}
-	if value, ok := acu.mutation.Scopes(); ok {
-		_spec.SetField(authorizationcode.FieldScopes, field.TypeString, value)
+	if value, ok := acu.mutation.Code(); ok {
+		_spec.SetField(authorizationcode.FieldCode, field.TypeString, value)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, acu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -182,15 +168,9 @@ func (acuo *AuthorizationCodeUpdateOne) SetClientID(s string) *AuthorizationCode
 	return acuo
 }
 
-// SetUserID sets the "user_id" field.
-func (acuo *AuthorizationCodeUpdateOne) SetUserID(s string) *AuthorizationCodeUpdateOne {
-	acuo.mutation.SetUserID(s)
-	return acuo
-}
-
-// SetScopes sets the "scopes" field.
-func (acuo *AuthorizationCodeUpdateOne) SetScopes(s string) *AuthorizationCodeUpdateOne {
-	acuo.mutation.SetScopes(s)
+// SetCode sets the "code" field.
+func (acuo *AuthorizationCodeUpdateOne) SetCode(s string) *AuthorizationCodeUpdateOne {
+	acuo.mutation.SetCode(s)
 	return acuo
 }
 
@@ -279,14 +259,9 @@ func (acuo *AuthorizationCodeUpdateOne) check() error {
 			return &ValidationError{Name: "client_id", err: fmt.Errorf(`ent: validator failed for field "AuthorizationCode.client_id": %w`, err)}
 		}
 	}
-	if v, ok := acuo.mutation.UserID(); ok {
-		if err := authorizationcode.UserIDValidator(v); err != nil {
-			return &ValidationError{Name: "user_id", err: fmt.Errorf(`ent: validator failed for field "AuthorizationCode.user_id": %w`, err)}
-		}
-	}
-	if v, ok := acuo.mutation.Scopes(); ok {
-		if err := authorizationcode.ScopesValidator(v); err != nil {
-			return &ValidationError{Name: "scopes", err: fmt.Errorf(`ent: validator failed for field "AuthorizationCode.scopes": %w`, err)}
+	if v, ok := acuo.mutation.Code(); ok {
+		if err := authorizationcode.CodeValidator(v); err != nil {
+			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "AuthorizationCode.code": %w`, err)}
 		}
 	}
 	return nil
@@ -330,11 +305,8 @@ func (acuo *AuthorizationCodeUpdateOne) sqlSave(ctx context.Context) (_node *Aut
 	if value, ok := acuo.mutation.ClientID(); ok {
 		_spec.SetField(authorizationcode.FieldClientID, field.TypeString, value)
 	}
-	if value, ok := acuo.mutation.UserID(); ok {
-		_spec.SetField(authorizationcode.FieldUserID, field.TypeString, value)
-	}
-	if value, ok := acuo.mutation.Scopes(); ok {
-		_spec.SetField(authorizationcode.FieldScopes, field.TypeString, value)
+	if value, ok := acuo.mutation.Code(); ok {
+		_spec.SetField(authorizationcode.FieldCode, field.TypeString, value)
 	}
 	_node = &AuthorizationCode{config: acuo.config}
 	_spec.Assign = _node.assignValues

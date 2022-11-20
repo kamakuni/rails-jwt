@@ -2,6 +2,10 @@
 
 package authorizationcode
 
+import (
+	"time"
+)
+
 const (
 	// Label holds the string label denoting the authorizationcode type in the database.
 	Label = "authorization_code"
@@ -9,10 +13,10 @@ const (
 	FieldID = "id"
 	// FieldClientID holds the string denoting the client_id field in the database.
 	FieldClientID = "client_id"
-	// FieldUserID holds the string denoting the user_id field in the database.
-	FieldUserID = "user_id"
-	// FieldScopes holds the string denoting the scopes field in the database.
-	FieldScopes = "scopes"
+	// FieldCode holds the string denoting the code field in the database.
+	FieldCode = "code"
+	// FieldIssued holds the string denoting the issued field in the database.
+	FieldIssued = "issued"
 	// Table holds the table name of the authorizationcode in the database.
 	Table = "authorization_codes"
 )
@@ -21,8 +25,8 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldClientID,
-	FieldUserID,
-	FieldScopes,
+	FieldCode,
+	FieldIssued,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -38,8 +42,8 @@ func ValidColumn(column string) bool {
 var (
 	// ClientIDValidator is a validator for the "client_id" field. It is called by the builders before save.
 	ClientIDValidator func(string) error
-	// UserIDValidator is a validator for the "user_id" field. It is called by the builders before save.
-	UserIDValidator func(string) error
-	// ScopesValidator is a validator for the "scopes" field. It is called by the builders before save.
-	ScopesValidator func(string) error
+	// CodeValidator is a validator for the "code" field. It is called by the builders before save.
+	CodeValidator func(string) error
+	// DefaultIssued holds the default value on creation for the "issued" field.
+	DefaultIssued time.Time
 )

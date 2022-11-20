@@ -1,6 +1,8 @@
 package schema
 
 import (
+	"time"
+
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
 )
@@ -14,8 +16,8 @@ type AuthorizationCode struct {
 func (AuthorizationCode) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("client_id").NotEmpty(),
-		field.String("user_id").NotEmpty(),
-		field.String("scopes").NotEmpty(),
+		field.String("code").NotEmpty(),
+		field.Time("issued").Immutable().Default(time.Now()),
 	}
 }
 

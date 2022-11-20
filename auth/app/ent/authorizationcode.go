@@ -6,6 +6,7 @@ import (
 	"auth/ent/authorizationcode"
 	"fmt"
 	"strings"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 )
@@ -17,10 +18,10 @@ type AuthorizationCode struct {
 	ID int `json:"id,omitempty"`
 	// ClientID holds the value of the "client_id" field.
 	ClientID string `json:"client_id,omitempty"`
-	// UserID holds the value of the "user_id" field.
-	UserID string `json:"user_id,omitempty"`
-	// Scopes holds the value of the "scopes" field.
-	Scopes string `json:"scopes,omitempty"`
+	// Code holds the value of the "code" field.
+	Code string `json:"code,omitempty"`
+	// Issued holds the value of the "issued" field.
+	Issued time.Time `json:"issued,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -30,8 +31,10 @@ func (*AuthorizationCode) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case authorizationcode.FieldID:
 			values[i] = new(sql.NullInt64)
-		case authorizationcode.FieldClientID, authorizationcode.FieldUserID, authorizationcode.FieldScopes:
+		case authorizationcode.FieldClientID, authorizationcode.FieldCode:
 			values[i] = new(sql.NullString)
+		case authorizationcode.FieldIssued:
+			values[i] = new(sql.NullTime)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type AuthorizationCode", columns[i])
 		}
@@ -59,17 +62,17 @@ func (ac *AuthorizationCode) assignValues(columns []string, values []any) error 
 			} else if value.Valid {
 				ac.ClientID = value.String
 			}
-		case authorizationcode.FieldUserID:
+		case authorizationcode.FieldCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field user_id", values[i])
+				return fmt.Errorf("unexpected type %T for field code", values[i])
 			} else if value.Valid {
-				ac.UserID = value.String
+				ac.Code = value.String
 			}
-		case authorizationcode.FieldScopes:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field scopes", values[i])
+		case authorizationcode.FieldIssued:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field issued", values[i])
 			} else if value.Valid {
-				ac.Scopes = value.String
+				ac.Issued = value.Time
 			}
 		}
 	}
@@ -102,11 +105,11 @@ func (ac *AuthorizationCode) String() string {
 	builder.WriteString("client_id=")
 	builder.WriteString(ac.ClientID)
 	builder.WriteString(", ")
-	builder.WriteString("user_id=")
-	builder.WriteString(ac.UserID)
+	builder.WriteString("code=")
+	builder.WriteString(ac.Code)
 	builder.WriteString(", ")
-	builder.WriteString("scopes=")
-	builder.WriteString(ac.Scopes)
+	builder.WriteString("issued=")
+	builder.WriteString(ac.Issued.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

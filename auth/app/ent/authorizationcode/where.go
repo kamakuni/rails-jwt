@@ -4,6 +4,7 @@ package authorizationcode
 
 import (
 	"auth/ent/predicate"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 )
@@ -86,17 +87,17 @@ func ClientID(v string) predicate.AuthorizationCode {
 	})
 }
 
-// UserID applies equality check predicate on the "user_id" field. It's identical to UserIDEQ.
-func UserID(v string) predicate.AuthorizationCode {
+// Code applies equality check predicate on the "code" field. It's identical to CodeEQ.
+func Code(v string) predicate.AuthorizationCode {
 	return predicate.AuthorizationCode(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldUserID), v))
+		s.Where(sql.EQ(s.C(FieldCode), v))
 	})
 }
 
-// Scopes applies equality check predicate on the "scopes" field. It's identical to ScopesEQ.
-func Scopes(v string) predicate.AuthorizationCode {
+// Issued applies equality check predicate on the "issued" field. It's identical to IssuedEQ.
+func Issued(v time.Time) predicate.AuthorizationCode {
 	return predicate.AuthorizationCode(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldScopes), v))
+		s.Where(sql.EQ(s.C(FieldIssued), v))
 	})
 }
 
@@ -199,201 +200,166 @@ func ClientIDContainsFold(v string) predicate.AuthorizationCode {
 	})
 }
 
-// UserIDEQ applies the EQ predicate on the "user_id" field.
-func UserIDEQ(v string) predicate.AuthorizationCode {
+// CodeEQ applies the EQ predicate on the "code" field.
+func CodeEQ(v string) predicate.AuthorizationCode {
 	return predicate.AuthorizationCode(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldUserID), v))
+		s.Where(sql.EQ(s.C(FieldCode), v))
 	})
 }
 
-// UserIDNEQ applies the NEQ predicate on the "user_id" field.
-func UserIDNEQ(v string) predicate.AuthorizationCode {
+// CodeNEQ applies the NEQ predicate on the "code" field.
+func CodeNEQ(v string) predicate.AuthorizationCode {
 	return predicate.AuthorizationCode(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldUserID), v))
+		s.Where(sql.NEQ(s.C(FieldCode), v))
 	})
 }
 
-// UserIDIn applies the In predicate on the "user_id" field.
-func UserIDIn(vs ...string) predicate.AuthorizationCode {
+// CodeIn applies the In predicate on the "code" field.
+func CodeIn(vs ...string) predicate.AuthorizationCode {
 	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.AuthorizationCode(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldUserID), v...))
+		s.Where(sql.In(s.C(FieldCode), v...))
 	})
 }
 
-// UserIDNotIn applies the NotIn predicate on the "user_id" field.
-func UserIDNotIn(vs ...string) predicate.AuthorizationCode {
+// CodeNotIn applies the NotIn predicate on the "code" field.
+func CodeNotIn(vs ...string) predicate.AuthorizationCode {
 	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.AuthorizationCode(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldUserID), v...))
+		s.Where(sql.NotIn(s.C(FieldCode), v...))
 	})
 }
 
-// UserIDGT applies the GT predicate on the "user_id" field.
-func UserIDGT(v string) predicate.AuthorizationCode {
+// CodeGT applies the GT predicate on the "code" field.
+func CodeGT(v string) predicate.AuthorizationCode {
 	return predicate.AuthorizationCode(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldUserID), v))
+		s.Where(sql.GT(s.C(FieldCode), v))
 	})
 }
 
-// UserIDGTE applies the GTE predicate on the "user_id" field.
-func UserIDGTE(v string) predicate.AuthorizationCode {
+// CodeGTE applies the GTE predicate on the "code" field.
+func CodeGTE(v string) predicate.AuthorizationCode {
 	return predicate.AuthorizationCode(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldUserID), v))
+		s.Where(sql.GTE(s.C(FieldCode), v))
 	})
 }
 
-// UserIDLT applies the LT predicate on the "user_id" field.
-func UserIDLT(v string) predicate.AuthorizationCode {
+// CodeLT applies the LT predicate on the "code" field.
+func CodeLT(v string) predicate.AuthorizationCode {
 	return predicate.AuthorizationCode(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldUserID), v))
+		s.Where(sql.LT(s.C(FieldCode), v))
 	})
 }
 
-// UserIDLTE applies the LTE predicate on the "user_id" field.
-func UserIDLTE(v string) predicate.AuthorizationCode {
+// CodeLTE applies the LTE predicate on the "code" field.
+func CodeLTE(v string) predicate.AuthorizationCode {
 	return predicate.AuthorizationCode(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldUserID), v))
+		s.Where(sql.LTE(s.C(FieldCode), v))
 	})
 }
 
-// UserIDContains applies the Contains predicate on the "user_id" field.
-func UserIDContains(v string) predicate.AuthorizationCode {
+// CodeContains applies the Contains predicate on the "code" field.
+func CodeContains(v string) predicate.AuthorizationCode {
 	return predicate.AuthorizationCode(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldUserID), v))
+		s.Where(sql.Contains(s.C(FieldCode), v))
 	})
 }
 
-// UserIDHasPrefix applies the HasPrefix predicate on the "user_id" field.
-func UserIDHasPrefix(v string) predicate.AuthorizationCode {
+// CodeHasPrefix applies the HasPrefix predicate on the "code" field.
+func CodeHasPrefix(v string) predicate.AuthorizationCode {
 	return predicate.AuthorizationCode(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldUserID), v))
+		s.Where(sql.HasPrefix(s.C(FieldCode), v))
 	})
 }
 
-// UserIDHasSuffix applies the HasSuffix predicate on the "user_id" field.
-func UserIDHasSuffix(v string) predicate.AuthorizationCode {
+// CodeHasSuffix applies the HasSuffix predicate on the "code" field.
+func CodeHasSuffix(v string) predicate.AuthorizationCode {
 	return predicate.AuthorizationCode(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldUserID), v))
+		s.Where(sql.HasSuffix(s.C(FieldCode), v))
 	})
 }
 
-// UserIDEqualFold applies the EqualFold predicate on the "user_id" field.
-func UserIDEqualFold(v string) predicate.AuthorizationCode {
+// CodeEqualFold applies the EqualFold predicate on the "code" field.
+func CodeEqualFold(v string) predicate.AuthorizationCode {
 	return predicate.AuthorizationCode(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldUserID), v))
+		s.Where(sql.EqualFold(s.C(FieldCode), v))
 	})
 }
 
-// UserIDContainsFold applies the ContainsFold predicate on the "user_id" field.
-func UserIDContainsFold(v string) predicate.AuthorizationCode {
+// CodeContainsFold applies the ContainsFold predicate on the "code" field.
+func CodeContainsFold(v string) predicate.AuthorizationCode {
 	return predicate.AuthorizationCode(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldUserID), v))
+		s.Where(sql.ContainsFold(s.C(FieldCode), v))
 	})
 }
 
-// ScopesEQ applies the EQ predicate on the "scopes" field.
-func ScopesEQ(v string) predicate.AuthorizationCode {
+// IssuedEQ applies the EQ predicate on the "issued" field.
+func IssuedEQ(v time.Time) predicate.AuthorizationCode {
 	return predicate.AuthorizationCode(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldScopes), v))
+		s.Where(sql.EQ(s.C(FieldIssued), v))
 	})
 }
 
-// ScopesNEQ applies the NEQ predicate on the "scopes" field.
-func ScopesNEQ(v string) predicate.AuthorizationCode {
+// IssuedNEQ applies the NEQ predicate on the "issued" field.
+func IssuedNEQ(v time.Time) predicate.AuthorizationCode {
 	return predicate.AuthorizationCode(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldScopes), v))
+		s.Where(sql.NEQ(s.C(FieldIssued), v))
 	})
 }
 
-// ScopesIn applies the In predicate on the "scopes" field.
-func ScopesIn(vs ...string) predicate.AuthorizationCode {
+// IssuedIn applies the In predicate on the "issued" field.
+func IssuedIn(vs ...time.Time) predicate.AuthorizationCode {
 	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.AuthorizationCode(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldScopes), v...))
+		s.Where(sql.In(s.C(FieldIssued), v...))
 	})
 }
 
-// ScopesNotIn applies the NotIn predicate on the "scopes" field.
-func ScopesNotIn(vs ...string) predicate.AuthorizationCode {
+// IssuedNotIn applies the NotIn predicate on the "issued" field.
+func IssuedNotIn(vs ...time.Time) predicate.AuthorizationCode {
 	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.AuthorizationCode(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldScopes), v...))
+		s.Where(sql.NotIn(s.C(FieldIssued), v...))
 	})
 }
 
-// ScopesGT applies the GT predicate on the "scopes" field.
-func ScopesGT(v string) predicate.AuthorizationCode {
+// IssuedGT applies the GT predicate on the "issued" field.
+func IssuedGT(v time.Time) predicate.AuthorizationCode {
 	return predicate.AuthorizationCode(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldScopes), v))
+		s.Where(sql.GT(s.C(FieldIssued), v))
 	})
 }
 
-// ScopesGTE applies the GTE predicate on the "scopes" field.
-func ScopesGTE(v string) predicate.AuthorizationCode {
+// IssuedGTE applies the GTE predicate on the "issued" field.
+func IssuedGTE(v time.Time) predicate.AuthorizationCode {
 	return predicate.AuthorizationCode(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldScopes), v))
+		s.Where(sql.GTE(s.C(FieldIssued), v))
 	})
 }
 
-// ScopesLT applies the LT predicate on the "scopes" field.
-func ScopesLT(v string) predicate.AuthorizationCode {
+// IssuedLT applies the LT predicate on the "issued" field.
+func IssuedLT(v time.Time) predicate.AuthorizationCode {
 	return predicate.AuthorizationCode(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldScopes), v))
+		s.Where(sql.LT(s.C(FieldIssued), v))
 	})
 }
 
-// ScopesLTE applies the LTE predicate on the "scopes" field.
-func ScopesLTE(v string) predicate.AuthorizationCode {
+// IssuedLTE applies the LTE predicate on the "issued" field.
+func IssuedLTE(v time.Time) predicate.AuthorizationCode {
 	return predicate.AuthorizationCode(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldScopes), v))
-	})
-}
-
-// ScopesContains applies the Contains predicate on the "scopes" field.
-func ScopesContains(v string) predicate.AuthorizationCode {
-	return predicate.AuthorizationCode(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldScopes), v))
-	})
-}
-
-// ScopesHasPrefix applies the HasPrefix predicate on the "scopes" field.
-func ScopesHasPrefix(v string) predicate.AuthorizationCode {
-	return predicate.AuthorizationCode(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldScopes), v))
-	})
-}
-
-// ScopesHasSuffix applies the HasSuffix predicate on the "scopes" field.
-func ScopesHasSuffix(v string) predicate.AuthorizationCode {
-	return predicate.AuthorizationCode(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldScopes), v))
-	})
-}
-
-// ScopesEqualFold applies the EqualFold predicate on the "scopes" field.
-func ScopesEqualFold(v string) predicate.AuthorizationCode {
-	return predicate.AuthorizationCode(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldScopes), v))
-	})
-}
-
-// ScopesContainsFold applies the ContainsFold predicate on the "scopes" field.
-func ScopesContainsFold(v string) predicate.AuthorizationCode {
-	return predicate.AuthorizationCode(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldScopes), v))
+		s.Where(sql.LTE(s.C(FieldIssued), v))
 	})
 }
 

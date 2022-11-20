@@ -12,8 +12,8 @@ var (
 	AuthorizationCodesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "client_id", Type: field.TypeString},
-		{Name: "user_id", Type: field.TypeString},
-		{Name: "scopes", Type: field.TypeString},
+		{Name: "code", Type: field.TypeString},
+		{Name: "issued", Type: field.TypeTime},
 	}
 	// AuthorizationCodesTable holds the schema information for the "authorization_codes" table.
 	AuthorizationCodesTable = &schema.Table{

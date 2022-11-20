@@ -7,6 +7,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -25,15 +26,23 @@ func (acc *AuthorizationCodeCreate) SetClientID(s string) *AuthorizationCodeCrea
 	return acc
 }
 
-// SetUserID sets the "user_id" field.
-func (acc *AuthorizationCodeCreate) SetUserID(s string) *AuthorizationCodeCreate {
-	acc.mutation.SetUserID(s)
+// SetCode sets the "code" field.
+func (acc *AuthorizationCodeCreate) SetCode(s string) *AuthorizationCodeCreate {
+	acc.mutation.SetCode(s)
 	return acc
 }
 
-// SetScopes sets the "scopes" field.
-func (acc *AuthorizationCodeCreate) SetScopes(s string) *AuthorizationCodeCreate {
-	acc.mutation.SetScopes(s)
+// SetIssued sets the "issued" field.
+func (acc *AuthorizationCodeCreate) SetIssued(t time.Time) *AuthorizationCodeCreate {
+	acc.mutation.SetIssued(t)
+	return acc
+}
+
+// SetNillableIssued sets the "issued" field if the given value is not nil.
+func (acc *AuthorizationCodeCreate) SetNillableIssued(t *time.Time) *AuthorizationCodeCreate {
+	if t != nil {
+		acc.SetIssued(*t)
+	}
 	return acc
 }
 
@@ -48,6 +57,7 @@ func (acc *AuthorizationCodeCreate) Save(ctx context.Context) (*AuthorizationCod
 		err  error
 		node *AuthorizationCode
 	)
+	acc.defaults()
 	if len(acc.hooks) == 0 {
 		if err = acc.check(); err != nil {
 			return nil, err
@@ -111,6 +121,14 @@ func (acc *AuthorizationCodeCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (acc *AuthorizationCodeCreate) defaults() {
+	if _, ok := acc.mutation.Issued(); !ok {
+		v := authorizationcode.DefaultIssued
+		acc.mutation.SetIssued(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (acc *AuthorizationCodeCreate) check() error {
 	if _, ok := acc.mutation.ClientID(); !ok {
@@ -121,21 +139,16 @@ func (acc *AuthorizationCodeCreate) check() error {
 			return &ValidationError{Name: "client_id", err: fmt.Errorf(`ent: validator failed for field "AuthorizationCode.client_id": %w`, err)}
 		}
 	}
-	if _, ok := acc.mutation.UserID(); !ok {
-		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "AuthorizationCode.user_id"`)}
+	if _, ok := acc.mutation.Code(); !ok {
+		return &ValidationError{Name: "code", err: errors.New(`ent: missing required field "AuthorizationCode.code"`)}
 	}
-	if v, ok := acc.mutation.UserID(); ok {
-		if err := authorizationcode.UserIDValidator(v); err != nil {
-			return &ValidationError{Name: "user_id", err: fmt.Errorf(`ent: validator failed for field "AuthorizationCode.user_id": %w`, err)}
+	if v, ok := acc.mutation.Code(); ok {
+		if err := authorizationcode.CodeValidator(v); err != nil {
+			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "AuthorizationCode.code": %w`, err)}
 		}
 	}
-	if _, ok := acc.mutation.Scopes(); !ok {
-		return &ValidationError{Name: "scopes", err: errors.New(`ent: missing required field "AuthorizationCode.scopes"`)}
-	}
-	if v, ok := acc.mutation.Scopes(); ok {
-		if err := authorizationcode.ScopesValidator(v); err != nil {
-			return &ValidationError{Name: "scopes", err: fmt.Errorf(`ent: validator failed for field "AuthorizationCode.scopes": %w`, err)}
-		}
+	if _, ok := acc.mutation.Issued(); !ok {
+		return &ValidationError{Name: "issued", err: errors.New(`ent: missing required field "AuthorizationCode.issued"`)}
 	}
 	return nil
 }
@@ -168,13 +181,13 @@ func (acc *AuthorizationCodeCreate) createSpec() (*AuthorizationCode, *sqlgraph.
 		_spec.SetField(authorizationcode.FieldClientID, field.TypeString, value)
 		_node.ClientID = value
 	}
-	if value, ok := acc.mutation.UserID(); ok {
-		_spec.SetField(authorizationcode.FieldUserID, field.TypeString, value)
-		_node.UserID = value
+	if value, ok := acc.mutation.Code(); ok {
+		_spec.SetField(authorizationcode.FieldCode, field.TypeString, value)
+		_node.Code = value
 	}
-	if value, ok := acc.mutation.Scopes(); ok {
-		_spec.SetField(authorizationcode.FieldScopes, field.TypeString, value)
-		_node.Scopes = value
+	if value, ok := acc.mutation.Issued(); ok {
+		_spec.SetField(authorizationcode.FieldIssued, field.TypeTime, value)
+		_node.Issued = value
 	}
 	return _node, _spec
 }
@@ -193,6 +206,7 @@ func (accb *AuthorizationCodeCreateBulk) Save(ctx context.Context) ([]*Authoriza
 	for i := range accb.builders {
 		func(i int, root context.Context) {
 			builder := accb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*AuthorizationCodeMutation)
 				if !ok {

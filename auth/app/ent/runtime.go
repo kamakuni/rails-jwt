@@ -8,6 +8,7 @@ import (
 	"auth/ent/refreshtoken"
 	"auth/ent/schema"
 	"auth/ent/user"
+	"time"
 )
 
 // The init function reads all schema descriptors with runtime code
@@ -20,14 +21,14 @@ func init() {
 	authorizationcodeDescClientID := authorizationcodeFields[0].Descriptor()
 	// authorizationcode.ClientIDValidator is a validator for the "client_id" field. It is called by the builders before save.
 	authorizationcode.ClientIDValidator = authorizationcodeDescClientID.Validators[0].(func(string) error)
-	// authorizationcodeDescUserID is the schema descriptor for user_id field.
-	authorizationcodeDescUserID := authorizationcodeFields[1].Descriptor()
-	// authorizationcode.UserIDValidator is a validator for the "user_id" field. It is called by the builders before save.
-	authorizationcode.UserIDValidator = authorizationcodeDescUserID.Validators[0].(func(string) error)
-	// authorizationcodeDescScopes is the schema descriptor for scopes field.
-	authorizationcodeDescScopes := authorizationcodeFields[2].Descriptor()
-	// authorizationcode.ScopesValidator is a validator for the "scopes" field. It is called by the builders before save.
-	authorizationcode.ScopesValidator = authorizationcodeDescScopes.Validators[0].(func(string) error)
+	// authorizationcodeDescCode is the schema descriptor for code field.
+	authorizationcodeDescCode := authorizationcodeFields[1].Descriptor()
+	// authorizationcode.CodeValidator is a validator for the "code" field. It is called by the builders before save.
+	authorizationcode.CodeValidator = authorizationcodeDescCode.Validators[0].(func(string) error)
+	// authorizationcodeDescIssued is the schema descriptor for issued field.
+	authorizationcodeDescIssued := authorizationcodeFields[2].Descriptor()
+	// authorizationcode.DefaultIssued holds the default value on creation for the issued field.
+	authorizationcode.DefaultIssued = authorizationcodeDescIssued.Default.(time.Time)
 	oauthclientFields := schema.OAuthClient{}.Fields()
 	_ = oauthclientFields
 	// oauthclientDescClientID is the schema descriptor for client_id field.

@@ -137,6 +137,10 @@ func NewAuthServer(ctx context.Context, client *ent.Client, addr string, secret 
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		s.client.AuthorizationCode.Create().
+			SetClientID(clientID).
+			SetCode(code).
+			Save(ctx)
 		values.Add(constant.Code.String(), code)
 		values.Add("state", state)
 		redirectURI.RawQuery = values.Encode()
