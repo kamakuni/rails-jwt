@@ -17,6 +17,8 @@ func (AuthorizationCode) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("client_id").NotEmpty(),
 		field.String("code").NotEmpty(),
+		field.String("code_challenge").NotEmpty(),
+		field.String("code_challenge_method").NotEmpty(),
 		field.Time("issued").Immutable().Default(time.Now()),
 	}
 }

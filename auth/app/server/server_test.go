@@ -2,6 +2,7 @@ package server
 
 import (
 	"auth/constant"
+	"auth/ent/authorizationcode"
 	"auth/ent/enttest"
 	"auth/ent/oauthclient"
 	"bytes"
@@ -135,6 +136,13 @@ func TestAuthorize(t *testing.T) {
 	}
 	if res.StatusCode != 302 {
 		t.Error("Unexpected status code.")
+	}
+	ctx := context.Background()
+	exist, _ := s.client.AuthorizationCode.Query().
+		Where(authorizationcode.ClientID(resJSON.ClientID)).
+		Exist(ctx)
+	if !exist {
+		t.Error("Authorization code is not found.")
 	}
 }
 
