@@ -32,6 +32,18 @@ func (acc *AuthorizationCodeCreate) SetCode(s string) *AuthorizationCodeCreate {
 	return acc
 }
 
+// SetCodeChallenge sets the "code_challenge" field.
+func (acc *AuthorizationCodeCreate) SetCodeChallenge(s string) *AuthorizationCodeCreate {
+	acc.mutation.SetCodeChallenge(s)
+	return acc
+}
+
+// SetCodeChallengeMethod sets the "code_challenge_method" field.
+func (acc *AuthorizationCodeCreate) SetCodeChallengeMethod(s string) *AuthorizationCodeCreate {
+	acc.mutation.SetCodeChallengeMethod(s)
+	return acc
+}
+
 // SetIssued sets the "issued" field.
 func (acc *AuthorizationCodeCreate) SetIssued(t time.Time) *AuthorizationCodeCreate {
 	acc.mutation.SetIssued(t)
@@ -147,6 +159,22 @@ func (acc *AuthorizationCodeCreate) check() error {
 			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "AuthorizationCode.code": %w`, err)}
 		}
 	}
+	if _, ok := acc.mutation.CodeChallenge(); !ok {
+		return &ValidationError{Name: "code_challenge", err: errors.New(`ent: missing required field "AuthorizationCode.code_challenge"`)}
+	}
+	if v, ok := acc.mutation.CodeChallenge(); ok {
+		if err := authorizationcode.CodeChallengeValidator(v); err != nil {
+			return &ValidationError{Name: "code_challenge", err: fmt.Errorf(`ent: validator failed for field "AuthorizationCode.code_challenge": %w`, err)}
+		}
+	}
+	if _, ok := acc.mutation.CodeChallengeMethod(); !ok {
+		return &ValidationError{Name: "code_challenge_method", err: errors.New(`ent: missing required field "AuthorizationCode.code_challenge_method"`)}
+	}
+	if v, ok := acc.mutation.CodeChallengeMethod(); ok {
+		if err := authorizationcode.CodeChallengeMethodValidator(v); err != nil {
+			return &ValidationError{Name: "code_challenge_method", err: fmt.Errorf(`ent: validator failed for field "AuthorizationCode.code_challenge_method": %w`, err)}
+		}
+	}
 	if _, ok := acc.mutation.Issued(); !ok {
 		return &ValidationError{Name: "issued", err: errors.New(`ent: missing required field "AuthorizationCode.issued"`)}
 	}
@@ -184,6 +212,14 @@ func (acc *AuthorizationCodeCreate) createSpec() (*AuthorizationCode, *sqlgraph.
 	if value, ok := acc.mutation.Code(); ok {
 		_spec.SetField(authorizationcode.FieldCode, field.TypeString, value)
 		_node.Code = value
+	}
+	if value, ok := acc.mutation.CodeChallenge(); ok {
+		_spec.SetField(authorizationcode.FieldCodeChallenge, field.TypeString, value)
+		_node.CodeChallenge = value
+	}
+	if value, ok := acc.mutation.CodeChallengeMethod(); ok {
+		_spec.SetField(authorizationcode.FieldCodeChallengeMethod, field.TypeString, value)
+		_node.CodeChallengeMethod = value
 	}
 	if value, ok := acc.mutation.Issued(); ok {
 		_spec.SetField(authorizationcode.FieldIssued, field.TypeTime, value)

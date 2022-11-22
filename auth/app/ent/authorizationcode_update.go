@@ -39,6 +39,18 @@ func (acu *AuthorizationCodeUpdate) SetCode(s string) *AuthorizationCodeUpdate {
 	return acu
 }
 
+// SetCodeChallenge sets the "code_challenge" field.
+func (acu *AuthorizationCodeUpdate) SetCodeChallenge(s string) *AuthorizationCodeUpdate {
+	acu.mutation.SetCodeChallenge(s)
+	return acu
+}
+
+// SetCodeChallengeMethod sets the "code_challenge_method" field.
+func (acu *AuthorizationCodeUpdate) SetCodeChallengeMethod(s string) *AuthorizationCodeUpdate {
+	acu.mutation.SetCodeChallengeMethod(s)
+	return acu
+}
+
 // Mutation returns the AuthorizationCodeMutation object of the builder.
 func (acu *AuthorizationCodeUpdate) Mutation() *AuthorizationCodeMutation {
 	return acu.mutation
@@ -116,6 +128,16 @@ func (acu *AuthorizationCodeUpdate) check() error {
 			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "AuthorizationCode.code": %w`, err)}
 		}
 	}
+	if v, ok := acu.mutation.CodeChallenge(); ok {
+		if err := authorizationcode.CodeChallengeValidator(v); err != nil {
+			return &ValidationError{Name: "code_challenge", err: fmt.Errorf(`ent: validator failed for field "AuthorizationCode.code_challenge": %w`, err)}
+		}
+	}
+	if v, ok := acu.mutation.CodeChallengeMethod(); ok {
+		if err := authorizationcode.CodeChallengeMethodValidator(v); err != nil {
+			return &ValidationError{Name: "code_challenge_method", err: fmt.Errorf(`ent: validator failed for field "AuthorizationCode.code_challenge_method": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -142,6 +164,12 @@ func (acu *AuthorizationCodeUpdate) sqlSave(ctx context.Context) (n int, err err
 	}
 	if value, ok := acu.mutation.Code(); ok {
 		_spec.SetField(authorizationcode.FieldCode, field.TypeString, value)
+	}
+	if value, ok := acu.mutation.CodeChallenge(); ok {
+		_spec.SetField(authorizationcode.FieldCodeChallenge, field.TypeString, value)
+	}
+	if value, ok := acu.mutation.CodeChallengeMethod(); ok {
+		_spec.SetField(authorizationcode.FieldCodeChallengeMethod, field.TypeString, value)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, acu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -171,6 +199,18 @@ func (acuo *AuthorizationCodeUpdateOne) SetClientID(s string) *AuthorizationCode
 // SetCode sets the "code" field.
 func (acuo *AuthorizationCodeUpdateOne) SetCode(s string) *AuthorizationCodeUpdateOne {
 	acuo.mutation.SetCode(s)
+	return acuo
+}
+
+// SetCodeChallenge sets the "code_challenge" field.
+func (acuo *AuthorizationCodeUpdateOne) SetCodeChallenge(s string) *AuthorizationCodeUpdateOne {
+	acuo.mutation.SetCodeChallenge(s)
+	return acuo
+}
+
+// SetCodeChallengeMethod sets the "code_challenge_method" field.
+func (acuo *AuthorizationCodeUpdateOne) SetCodeChallengeMethod(s string) *AuthorizationCodeUpdateOne {
+	acuo.mutation.SetCodeChallengeMethod(s)
 	return acuo
 }
 
@@ -264,6 +304,16 @@ func (acuo *AuthorizationCodeUpdateOne) check() error {
 			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "AuthorizationCode.code": %w`, err)}
 		}
 	}
+	if v, ok := acuo.mutation.CodeChallenge(); ok {
+		if err := authorizationcode.CodeChallengeValidator(v); err != nil {
+			return &ValidationError{Name: "code_challenge", err: fmt.Errorf(`ent: validator failed for field "AuthorizationCode.code_challenge": %w`, err)}
+		}
+	}
+	if v, ok := acuo.mutation.CodeChallengeMethod(); ok {
+		if err := authorizationcode.CodeChallengeMethodValidator(v); err != nil {
+			return &ValidationError{Name: "code_challenge_method", err: fmt.Errorf(`ent: validator failed for field "AuthorizationCode.code_challenge_method": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -307,6 +357,12 @@ func (acuo *AuthorizationCodeUpdateOne) sqlSave(ctx context.Context) (_node *Aut
 	}
 	if value, ok := acuo.mutation.Code(); ok {
 		_spec.SetField(authorizationcode.FieldCode, field.TypeString, value)
+	}
+	if value, ok := acuo.mutation.CodeChallenge(); ok {
+		_spec.SetField(authorizationcode.FieldCodeChallenge, field.TypeString, value)
+	}
+	if value, ok := acuo.mutation.CodeChallengeMethod(); ok {
+		_spec.SetField(authorizationcode.FieldCodeChallengeMethod, field.TypeString, value)
 	}
 	_node = &AuthorizationCode{config: acuo.config}
 	_spec.Assign = _node.assignValues

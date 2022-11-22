@@ -35,16 +35,18 @@ const (
 // AuthorizationCodeMutation represents an operation that mutates the AuthorizationCode nodes in the graph.
 type AuthorizationCodeMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *int
-	client_id     *string
-	code          *string
-	issued        *time.Time
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*AuthorizationCode, error)
-	predicates    []predicate.AuthorizationCode
+	op                    Op
+	typ                   string
+	id                    *int
+	client_id             *string
+	code                  *string
+	code_challenge        *string
+	code_challenge_method *string
+	issued                *time.Time
+	clearedFields         map[string]struct{}
+	done                  bool
+	oldValue              func(context.Context) (*AuthorizationCode, error)
+	predicates            []predicate.AuthorizationCode
 }
 
 var _ ent.Mutation = (*AuthorizationCodeMutation)(nil)
@@ -217,6 +219,78 @@ func (m *AuthorizationCodeMutation) ResetCode() {
 	m.code = nil
 }
 
+// SetCodeChallenge sets the "code_challenge" field.
+func (m *AuthorizationCodeMutation) SetCodeChallenge(s string) {
+	m.code_challenge = &s
+}
+
+// CodeChallenge returns the value of the "code_challenge" field in the mutation.
+func (m *AuthorizationCodeMutation) CodeChallenge() (r string, exists bool) {
+	v := m.code_challenge
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCodeChallenge returns the old "code_challenge" field's value of the AuthorizationCode entity.
+// If the AuthorizationCode object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AuthorizationCodeMutation) OldCodeChallenge(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCodeChallenge is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCodeChallenge requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCodeChallenge: %w", err)
+	}
+	return oldValue.CodeChallenge, nil
+}
+
+// ResetCodeChallenge resets all changes to the "code_challenge" field.
+func (m *AuthorizationCodeMutation) ResetCodeChallenge() {
+	m.code_challenge = nil
+}
+
+// SetCodeChallengeMethod sets the "code_challenge_method" field.
+func (m *AuthorizationCodeMutation) SetCodeChallengeMethod(s string) {
+	m.code_challenge_method = &s
+}
+
+// CodeChallengeMethod returns the value of the "code_challenge_method" field in the mutation.
+func (m *AuthorizationCodeMutation) CodeChallengeMethod() (r string, exists bool) {
+	v := m.code_challenge_method
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCodeChallengeMethod returns the old "code_challenge_method" field's value of the AuthorizationCode entity.
+// If the AuthorizationCode object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AuthorizationCodeMutation) OldCodeChallengeMethod(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCodeChallengeMethod is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCodeChallengeMethod requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCodeChallengeMethod: %w", err)
+	}
+	return oldValue.CodeChallengeMethod, nil
+}
+
+// ResetCodeChallengeMethod resets all changes to the "code_challenge_method" field.
+func (m *AuthorizationCodeMutation) ResetCodeChallengeMethod() {
+	m.code_challenge_method = nil
+}
+
 // SetIssued sets the "issued" field.
 func (m *AuthorizationCodeMutation) SetIssued(t time.Time) {
 	m.issued = &t
@@ -272,12 +346,18 @@ func (m *AuthorizationCodeMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AuthorizationCodeMutation) Fields() []string {
-	fields := make([]string, 0, 3)
+	fields := make([]string, 0, 5)
 	if m.client_id != nil {
 		fields = append(fields, authorizationcode.FieldClientID)
 	}
 	if m.code != nil {
 		fields = append(fields, authorizationcode.FieldCode)
+	}
+	if m.code_challenge != nil {
+		fields = append(fields, authorizationcode.FieldCodeChallenge)
+	}
+	if m.code_challenge_method != nil {
+		fields = append(fields, authorizationcode.FieldCodeChallengeMethod)
 	}
 	if m.issued != nil {
 		fields = append(fields, authorizationcode.FieldIssued)
@@ -294,6 +374,10 @@ func (m *AuthorizationCodeMutation) Field(name string) (ent.Value, bool) {
 		return m.ClientID()
 	case authorizationcode.FieldCode:
 		return m.Code()
+	case authorizationcode.FieldCodeChallenge:
+		return m.CodeChallenge()
+	case authorizationcode.FieldCodeChallengeMethod:
+		return m.CodeChallengeMethod()
 	case authorizationcode.FieldIssued:
 		return m.Issued()
 	}
@@ -309,6 +393,10 @@ func (m *AuthorizationCodeMutation) OldField(ctx context.Context, name string) (
 		return m.OldClientID(ctx)
 	case authorizationcode.FieldCode:
 		return m.OldCode(ctx)
+	case authorizationcode.FieldCodeChallenge:
+		return m.OldCodeChallenge(ctx)
+	case authorizationcode.FieldCodeChallengeMethod:
+		return m.OldCodeChallengeMethod(ctx)
 	case authorizationcode.FieldIssued:
 		return m.OldIssued(ctx)
 	}
@@ -333,6 +421,20 @@ func (m *AuthorizationCodeMutation) SetField(name string, value ent.Value) error
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCode(v)
+		return nil
+	case authorizationcode.FieldCodeChallenge:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCodeChallenge(v)
+		return nil
+	case authorizationcode.FieldCodeChallengeMethod:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCodeChallengeMethod(v)
 		return nil
 	case authorizationcode.FieldIssued:
 		v, ok := value.(time.Time)
@@ -395,6 +497,12 @@ func (m *AuthorizationCodeMutation) ResetField(name string) error {
 		return nil
 	case authorizationcode.FieldCode:
 		m.ResetCode()
+		return nil
+	case authorizationcode.FieldCodeChallenge:
+		m.ResetCodeChallenge()
+		return nil
+	case authorizationcode.FieldCodeChallengeMethod:
+		m.ResetCodeChallengeMethod()
 		return nil
 	case authorizationcode.FieldIssued:
 		m.ResetIssued()

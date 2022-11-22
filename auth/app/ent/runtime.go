@@ -25,8 +25,16 @@ func init() {
 	authorizationcodeDescCode := authorizationcodeFields[1].Descriptor()
 	// authorizationcode.CodeValidator is a validator for the "code" field. It is called by the builders before save.
 	authorizationcode.CodeValidator = authorizationcodeDescCode.Validators[0].(func(string) error)
+	// authorizationcodeDescCodeChallenge is the schema descriptor for code_challenge field.
+	authorizationcodeDescCodeChallenge := authorizationcodeFields[2].Descriptor()
+	// authorizationcode.CodeChallengeValidator is a validator for the "code_challenge" field. It is called by the builders before save.
+	authorizationcode.CodeChallengeValidator = authorizationcodeDescCodeChallenge.Validators[0].(func(string) error)
+	// authorizationcodeDescCodeChallengeMethod is the schema descriptor for code_challenge_method field.
+	authorizationcodeDescCodeChallengeMethod := authorizationcodeFields[3].Descriptor()
+	// authorizationcode.CodeChallengeMethodValidator is a validator for the "code_challenge_method" field. It is called by the builders before save.
+	authorizationcode.CodeChallengeMethodValidator = authorizationcodeDescCodeChallengeMethod.Validators[0].(func(string) error)
 	// authorizationcodeDescIssued is the schema descriptor for issued field.
-	authorizationcodeDescIssued := authorizationcodeFields[2].Descriptor()
+	authorizationcodeDescIssued := authorizationcodeFields[4].Descriptor()
 	// authorizationcode.DefaultIssued holds the default value on creation for the issued field.
 	authorizationcode.DefaultIssued = authorizationcodeDescIssued.Default.(time.Time)
 	oauthclientFields := schema.OAuthClient{}.Fields()

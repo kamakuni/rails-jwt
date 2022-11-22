@@ -15,6 +15,10 @@ const (
 	FieldClientID = "client_id"
 	// FieldCode holds the string denoting the code field in the database.
 	FieldCode = "code"
+	// FieldCodeChallenge holds the string denoting the code_challenge field in the database.
+	FieldCodeChallenge = "code_challenge"
+	// FieldCodeChallengeMethod holds the string denoting the code_challenge_method field in the database.
+	FieldCodeChallengeMethod = "code_challenge_method"
 	// FieldIssued holds the string denoting the issued field in the database.
 	FieldIssued = "issued"
 	// Table holds the table name of the authorizationcode in the database.
@@ -26,6 +30,8 @@ var Columns = []string{
 	FieldID,
 	FieldClientID,
 	FieldCode,
+	FieldCodeChallenge,
+	FieldCodeChallengeMethod,
 	FieldIssued,
 }
 
@@ -44,6 +50,10 @@ var (
 	ClientIDValidator func(string) error
 	// CodeValidator is a validator for the "code" field. It is called by the builders before save.
 	CodeValidator func(string) error
+	// CodeChallengeValidator is a validator for the "code_challenge" field. It is called by the builders before save.
+	CodeChallengeValidator func(string) error
+	// CodeChallengeMethodValidator is a validator for the "code_challenge_method" field. It is called by the builders before save.
+	CodeChallengeMethodValidator func(string) error
 	// DefaultIssued holds the default value on creation for the "issued" field.
 	DefaultIssued time.Time
 )

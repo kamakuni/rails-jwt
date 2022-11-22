@@ -20,6 +20,10 @@ type AuthorizationCode struct {
 	ClientID string `json:"client_id,omitempty"`
 	// Code holds the value of the "code" field.
 	Code string `json:"code,omitempty"`
+	// CodeChallenge holds the value of the "code_challenge" field.
+	CodeChallenge string `json:"code_challenge,omitempty"`
+	// CodeChallengeMethod holds the value of the "code_challenge_method" field.
+	CodeChallengeMethod string `json:"code_challenge_method,omitempty"`
 	// Issued holds the value of the "issued" field.
 	Issued time.Time `json:"issued,omitempty"`
 }
@@ -31,7 +35,7 @@ func (*AuthorizationCode) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case authorizationcode.FieldID:
 			values[i] = new(sql.NullInt64)
-		case authorizationcode.FieldClientID, authorizationcode.FieldCode:
+		case authorizationcode.FieldClientID, authorizationcode.FieldCode, authorizationcode.FieldCodeChallenge, authorizationcode.FieldCodeChallengeMethod:
 			values[i] = new(sql.NullString)
 		case authorizationcode.FieldIssued:
 			values[i] = new(sql.NullTime)
@@ -67,6 +71,18 @@ func (ac *AuthorizationCode) assignValues(columns []string, values []any) error 
 				return fmt.Errorf("unexpected type %T for field code", values[i])
 			} else if value.Valid {
 				ac.Code = value.String
+			}
+		case authorizationcode.FieldCodeChallenge:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field code_challenge", values[i])
+			} else if value.Valid {
+				ac.CodeChallenge = value.String
+			}
+		case authorizationcode.FieldCodeChallengeMethod:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field code_challenge_method", values[i])
+			} else if value.Valid {
+				ac.CodeChallengeMethod = value.String
 			}
 		case authorizationcode.FieldIssued:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -107,6 +123,12 @@ func (ac *AuthorizationCode) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("code=")
 	builder.WriteString(ac.Code)
+	builder.WriteString(", ")
+	builder.WriteString("code_challenge=")
+	builder.WriteString(ac.CodeChallenge)
+	builder.WriteString(", ")
+	builder.WriteString("code_challenge_method=")
+	builder.WriteString(ac.CodeChallengeMethod)
 	builder.WriteString(", ")
 	builder.WriteString("issued=")
 	builder.WriteString(ac.Issued.Format(time.ANSIC))

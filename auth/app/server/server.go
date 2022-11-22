@@ -118,6 +118,7 @@ func NewAuthServer(ctx context.Context, client *ent.Client, addr string, secret 
 		}
 		clientID := params.Get("client_id")
 		state := params.Get("state")
+		codeChallenge := params.Get("code_challenge")
 		//scope := params.Get("scope")
 		c, err := s.client.OAuthClient.Query().
 			Where(oauthclient.ClientID(clientID)).
@@ -126,6 +127,7 @@ func NewAuthServer(ctx context.Context, client *ent.Client, addr string, secret 
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+
 		redirectURI, err := url.Parse(c.RedirectURI)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -140,6 +142,8 @@ func NewAuthServer(ctx context.Context, client *ent.Client, addr string, secret 
 		s.client.AuthorizationCode.Create().
 			SetClientID(clientID).
 			SetCode(code).
+			SetCodeChallenge(codeChallenge).
+			SetCodeChallengeMethod("plain").
 			Save(ctx)
 		values.Add(constant.Code.String(), code)
 		values.Add("state", state)

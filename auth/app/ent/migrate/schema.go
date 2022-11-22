@@ -13,6 +13,8 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "client_id", Type: field.TypeString},
 		{Name: "code", Type: field.TypeString},
+		{Name: "code_challenge", Type: field.TypeString},
+		{Name: "code_challenge_method", Type: field.TypeString},
 		{Name: "issued", Type: field.TypeTime},
 	}
 	// AuthorizationCodesTable holds the schema information for the "authorization_codes" table.
