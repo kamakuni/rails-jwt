@@ -8,7 +8,9 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"path/filepath"
 	"strconv"
+	"text/template"
 
 	"auth/constant"
 	"auth/ent"
@@ -17,7 +19,8 @@ import (
 
 type Server struct {
 	*http.Server
-	client *ent.Client
+	client    *ent.Client
+	templates map[string]*template.Template
 }
 
 func ReadSecret(path string) (string, error) {
@@ -31,6 +34,20 @@ func ReadSecret(path string) (string, error) {
 		return "", err
 	}
 	return string(data[:count]), nil
+}
+
+func CreateTemplates(tmpldir string) (map[string]*template.Template, error) {
+	templates := map[string]*template.Template{}
+	files, err := filepath.Glob(filepath.Join(tmpldir, "*.html"))
+	if err != nil {
+		return templates, err
+	}
+	for _, file := range files {
+		name := filepath.Base(file)
+		tmpl := template.Must(template.New(name).ParseFiles(file))
+		templates[name] = tmpl
+	}
+	return templates, nil
 }
 
 func NewAuthServer(ctx context.Context, client *ent.Client, addr string, secret string) *Server {
@@ -119,7 +136,7 @@ func NewAuthServer(ctx context.Context, client *ent.Client, addr string, secret 
 		clientID := params.Get("client_id")
 		state := params.Get("state")
 		codeChallenge := params.Get("code_challenge")
-		//scope := params.Get("scope")
+		scope := params.Get("scope")
 		c, err := s.client.OAuthClient.Query().
 			Where(oauthclient.ClientID(clientID)).
 			Only(ctx)
@@ -127,13 +144,6 @@ func NewAuthServer(ctx context.Context, client *ent.Client, addr string, secret 
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-
-		redirectURI, err := url.Parse(c.RedirectURI)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		values := redirectURI.Query()
 		code, err := CreateCode()
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -145,9 +155,21 @@ func NewAuthServer(ctx context.Context, client *ent.Client, addr string, secret 
 			SetCodeChallenge(codeChallenge).
 			SetCodeChallengeMethod("plain").
 			Save(ctx)
+		redirectURI, err := url.Parse(c.RedirectURI)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		values := redirectURI.Query()
 		values.Add(constant.Code.String(), code)
 		values.Add("state", state)
+		values.Add("scope", scope)
 		redirectURI.RawQuery = values.Encode()
+		w.Header().Add("Location", redirectURI.String())
+		w.WriteHeader(http.StatusFound)
+		return
+	})
+	mux.HandleFunc("/api/v1/refresh", func(w http.ResponseWriter, r *http.Request) {
 		//accessToken, err := CreateAccessToken("", time.Now(), secret)
 		//if err != nil {
 		//	http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -165,11 +187,6 @@ func NewAuthServer(ctx context.Context, client *ent.Client, addr string, secret 
 		//	http.Error(w, err.Error(), http.StatusInternalServerError)
 		//	return
 		//}
-		w.Header().Add("Location", redirectURI.String())
-		w.WriteHeader(http.StatusFound)
-		return
-	})
-	mux.HandleFunc("/api/v1/refresh", func(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, "refresh token")
 	})
 	s.Handler = mux

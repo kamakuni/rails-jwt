@@ -1,0 +1,31 @@
+<html>
+<head>
+    <title>Authorization Page</title>
+</head>
+<body>
+    <h2>Client Application</h2>
+    <div>{{ .ClientName }}</div>
+    <h2>Requested Permission</h2>
+    <div>
+        {{ range }}
+        <ol>
+            <li>{{ .Scope }}</li>
+        </ol>
+        {{ end }}
+    </div>
+    <form method="post" action="/api/v1/">
+        <div>
+            <input type="text" name="email" />
+        </div>
+        <div>
+            <input type="password" name="password" />
+        </div>
+        <div>
+            <button type="submit" name="approved" value="true">Approve</button>
+        </div>
+        <div>
+            <button type="submit" name="denied" value="true">Deny</button>
+        </div>
+    </form>
+</body>
+</html>

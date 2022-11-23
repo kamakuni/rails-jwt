@@ -160,3 +160,14 @@ func TestRefresh(t *testing.T) {
 		t.Errorf("response is not '%v'. actual:%v\n", expected, string(body))
 	}
 }
+
+func TestCreateTemplates(t *testing.T) {
+	templates, _ := CreateTemplates("../template")
+	tmpl, ok := templates["authorize.html"]
+	if !ok {
+		t.Error("template for authorize.html is not found.")
+	}
+	if tmpl.Name() != "authorize.html" {
+		t.Error("template for authorize.html is not found.")
+	}
+}
