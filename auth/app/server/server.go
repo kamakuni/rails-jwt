@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"text/template"
 
 	"auth/constant"
@@ -51,11 +52,13 @@ func CreateTemplates(tmpldir string) (map[string]*template.Template, error) {
 }
 
 func NewAuthServer(ctx context.Context, client *ent.Client, addr string, secret string) *Server {
+	templates, _ := CreateTemplates("../template")
 	s := &Server{
 		Server: &http.Server{
 			Addr: addr,
 		},
-		client: client,
+		client:    client,
+		templates: templates,
 	}
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/v1/client", func(w http.ResponseWriter, r *http.Request) {
@@ -167,6 +170,19 @@ func NewAuthServer(ctx context.Context, client *ent.Client, addr string, secret 
 		redirectURI.RawQuery = values.Encode()
 		w.Header().Add("Location", redirectURI.String())
 		w.WriteHeader(http.StatusFound)
+		tmpl, ok := s.templates["authorize.html"]
+		if !ok {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		data := struct {
+			ClientName string
+			Scopes     []string
+		}{
+			ClientName: c.ClientName,
+			Scopes:     strings.Split(scope, " "),
+		}
+		tmpl.Execute(w, data)
 		return
 	})
 	mux.HandleFunc("/api/v1/refresh", func(w http.ResponseWriter, r *http.Request) {

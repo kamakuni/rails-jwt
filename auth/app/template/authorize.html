@@ -7,13 +7,13 @@
     <div>{{ .ClientName }}</div>
     <h2>Requested Permission</h2>
     <div>
-        {{ range }}
+        {{ range .Scopes }}
         <ol>
-            <li>{{ .Scope }}</li>
+            <li>{{ . }}</li>
         </ol>
         {{ end }}
     </div>
-    <form method="post" action="/api/v1/">
+    <form method="post" action="/api/v1/authorize">
         <div>
             <input type="text" name="email" />
         </div>
@@ -24,7 +24,7 @@
             <button type="submit" name="approved" value="true">Approve</button>
         </div>
         <div>
-            <button type="submit" name="denied" value="true">Deny</button>
+            <button type="submit" name="denied" value="false">Deny</button>
         </div>
     </form>
 </body>

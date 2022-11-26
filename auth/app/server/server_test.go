@@ -8,6 +8,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -169,5 +170,24 @@ func TestCreateTemplates(t *testing.T) {
 	}
 	if tmpl.Name() != "authorize.html" {
 		t.Error("template for authorize.html is not found.")
+	}
+	clientName := "javascript app"
+	scopes := []string{"read", "write"}
+	v := struct {
+		ClientName string
+		Scopes     []string
+	}{
+		ClientName: clientName,
+		Scopes:     scopes,
+	}
+	var buf bytes.Buffer
+	if err := tmpl.Execute(&buf, v); err != nil {
+		t.Error("Cannot set variables in template.")
+	}
+	fmt.Printf("%s", buf.String())
+	if !(strings.Contains(buf.String(), clientName) &&
+		strings.Contains(buf.String(), scopes[0]) &&
+		strings.Contains(buf.String(), scopes[1])) {
+		t.Error("Cannot set variables in template.")
 	}
 }
