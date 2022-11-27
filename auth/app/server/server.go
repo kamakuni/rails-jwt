@@ -12,6 +12,7 @@ import (
 	"strconv"
 	"strings"
 	"text/template"
+	"time"
 
 	"auth/constant"
 	"auth/ent"
@@ -186,23 +187,24 @@ func NewAuthServer(ctx context.Context, client *ent.Client, addr string, secret 
 		return
 	})
 	mux.HandleFunc("/api/v1/refresh", func(w http.ResponseWriter, r *http.Request) {
-		//accessToken, err := CreateAccessToken("", time.Now(), secret)
-		//if err != nil {
-		//	http.Error(w, err.Error(), http.StatusInternalServerError)
-		//}
-		//refreshToken, err := CreateRefreshToken()
-		//if err != nil {
-		//	http.Error(w, err.Error(), http.StatusInternalServerError)
-		//	return
-		//}
-		//bytes, err := json.Marshal(&ResponseAuthorize{
-		//	AccessToken:  accessToken,
-		//	RefreshToken: refreshToken,
-		//})
-		//if err != nil {
-		//	http.Error(w, err.Error(), http.StatusInternalServerError)
-		//	return
-		//}
+		accessToken, err := CreateAccessToken("", time.Now(), secret)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		refreshToken, err := CreateRefreshToken()
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		bytes, err := json.Marshal(&ResponseAuthorize{
+			AccessToken:  accessToken,
+			RefreshToken: refreshToken,
+		})
+		fmt.Println(bytes)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 		io.WriteString(w, "refresh token")
 	})
 	s.Handler = mux
