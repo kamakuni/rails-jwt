@@ -147,8 +147,8 @@ func TestAuthorize(t *testing.T) {
 	}
 }
 
-func TestRefresh(t *testing.T) {
-	res, err := http.Get("http://localhost:8080/api/v1/refresh")
+func TestToken(t *testing.T) {
+	res, err := http.Get("http://localhost:8080/api/v1/token")
 	if err != nil {
 		t.Error(err)
 	}
