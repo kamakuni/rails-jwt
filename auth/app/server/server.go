@@ -127,66 +127,70 @@ func NewAuthServer(ctx context.Context, client *ent.Client, addr string, secret 
 		return
 	})
 	mux.HandleFunc("/api/v1/authorize", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
+		if r.Method == http.MethodGet {
+			params := r.URL.Query()
+			responseType := params.Get("response_type")
+			if responseType != constant.Code.String() {
+				http.Error(w, "", http.StatusInternalServerError)
+				return
+			}
+			clientID := params.Get("client_id")
+			state := params.Get("state")
+			codeChallenge := params.Get("code_challenge")
+			scope := params.Get("scope")
+			c, err := s.client.OAuthClient.Query().
+				Where(oauthclient.ClientID(clientID)).
+				Only(ctx)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			code, err := CreateCode()
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			s.client.AuthorizationCode.Create().
+				SetClientID(clientID).
+				SetCode(code).
+				SetCodeChallenge(codeChallenge).
+				SetCodeChallengeMethod("plain").
+				Save(ctx)
+			redirectURI, err := url.Parse(c.RedirectURI)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			values := redirectURI.Query()
+			values.Add(constant.Code.String(), code)
+			values.Add("state", state)
+			values.Add("scope", scope)
+			redirectURI.RawQuery = values.Encode()
+			w.Header().Add("Location", redirectURI.String())
+			w.WriteHeader(http.StatusFound)
+			tmpl, ok := s.templates["authorize.html"]
+			if !ok {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			data := struct {
+				ClientName string
+				Scopes     []string
+			}{
+				ClientName: c.ClientName,
+				Scopes:     strings.Split(scope, " "),
+			}
+			tmpl.Execute(w, data)
+			return
+		} else if r.Method == http.MethodPost {
+
+		} else {
 			w.WriteHeader(http.StatusMethodNotAllowed)
 			return
 		}
-		params := r.URL.Query()
-		responseType := params.Get("response_type")
-		if responseType != constant.Code.String() {
-			http.Error(w, "", http.StatusInternalServerError)
-			return
-		}
-		clientID := params.Get("client_id")
-		state := params.Get("state")
-		codeChallenge := params.Get("code_challenge")
-		scope := params.Get("scope")
-		c, err := s.client.OAuthClient.Query().
-			Where(oauthclient.ClientID(clientID)).
-			Only(ctx)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		code, err := CreateCode()
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		s.client.AuthorizationCode.Create().
-			SetClientID(clientID).
-			SetCode(code).
-			SetCodeChallenge(codeChallenge).
-			SetCodeChallengeMethod("plain").
-			Save(ctx)
-		redirectURI, err := url.Parse(c.RedirectURI)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		values := redirectURI.Query()
-		values.Add(constant.Code.String(), code)
-		values.Add("state", state)
-		values.Add("scope", scope)
-		redirectURI.RawQuery = values.Encode()
-		w.Header().Add("Location", redirectURI.String())
-		w.WriteHeader(http.StatusFound)
-		tmpl, ok := s.templates["authorize.html"]
-		if !ok {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		data := struct {
-			ClientName string
-			Scopes     []string
-		}{
-			ClientName: c.ClientName,
-			Scopes:     strings.Split(scope, " "),
-		}
-		tmpl.Execute(w, data)
-		return
+
 	})
-	mux.HandleFunc("/api/v1/refresh", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/api/v1/token", func(w http.ResponseWriter, r *http.Request) {
 		accessToken, err := CreateAccessToken("", time.Now(), secret)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
