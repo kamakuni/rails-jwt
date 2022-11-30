@@ -166,7 +166,6 @@ func NewAuthServer(ctx context.Context, client *ent.Client, addr string, secret 
 			values.Add("state", state)
 			values.Add("scope", scope)
 			redirectURI.RawQuery = values.Encode()
-			w.Header().Add("Location", redirectURI.String())
 			w.WriteHeader(http.StatusFound)
 			tmpl, ok := s.templates["authorize.html"]
 			if !ok {
@@ -183,9 +182,10 @@ func NewAuthServer(ctx context.Context, client *ent.Client, addr string, secret 
 			tmpl.Execute(w, data)
 			return
 		} else if r.Method == http.MethodPost {
-
+			w.Header().Add("Location", "") //redirectURI.String())
+			return
 		} else {
-			w.WriteHeader(http.StatusMethodNotAllowed)
+
 			return
 		}
 
