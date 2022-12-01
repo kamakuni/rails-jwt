@@ -166,7 +166,6 @@ func NewAuthServer(ctx context.Context, client *ent.Client, addr string, secret 
 			values.Add("state", state)
 			values.Add("scope", scope)
 			redirectURI.RawQuery = values.Encode()
-			w.WriteHeader(http.StatusFound)
 			tmpl, ok := s.templates["authorize.html"]
 			if !ok {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -182,10 +181,20 @@ func NewAuthServer(ctx context.Context, client *ent.Client, addr string, secret 
 			tmpl.Execute(w, data)
 			return
 		} else if r.Method == http.MethodPost {
+			if err := r.ParseForm(); err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			consent := r.Form.Get("consent")
+			if consent != "1" {
+				http.Error(w, "", http.StatusBadRequest)
+				return
+			}
 			w.Header().Add("Location", "") //redirectURI.String())
+			w.WriteHeader(http.StatusFound)
 			return
 		} else {
-
+			http.Error(w, "", http.StatusMethodNotAllowed)
 			return
 		}
 
