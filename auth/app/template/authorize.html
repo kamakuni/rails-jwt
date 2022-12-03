@@ -1,7 +1,9 @@
 <html>
+
 <head>
     <title>Authorization Page</title>
 </head>
+
 <body>
     <h2>Client Application</h2>
     <div>{{ .ClientName }}</div>
@@ -21,6 +23,9 @@
             <input type="password" name="password" />
         </div>
         <div>
+            <input hidden name="redirect_uri" value="{{ .RedirectURI }}" />
+        </div>
+        <div>
             <button type="submit" name="approved" value="true">Approve</button>
         </div>
         <div>
@@ -28,4 +33,5 @@
         </div>
     </form>
 </body>
+
 </html>

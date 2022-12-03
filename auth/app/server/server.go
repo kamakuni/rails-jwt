@@ -172,11 +172,13 @@ func NewAuthServer(ctx context.Context, client *ent.Client, addr string, secret 
 				return
 			}
 			data := struct {
-				ClientName string
-				Scopes     []string
+				ClientName  string
+				Scopes      []string
+				RedirectURI string
 			}{
-				ClientName: c.ClientName,
-				Scopes:     strings.Split(scope, " "),
+				ClientName:  c.ClientName,
+				Scopes:      strings.Split(scope, " "),
+				RedirectURI: redirectURI.String(),
 			}
 			tmpl.Execute(w, data)
 			return
@@ -190,7 +192,8 @@ func NewAuthServer(ctx context.Context, client *ent.Client, addr string, secret 
 				http.Error(w, "", http.StatusBadRequest)
 				return
 			}
-			w.Header().Add("Location", "") //redirectURI.String())
+			redirectURI := r.Form.Get("redirect_uri")
+			w.Header().Add("Location", redirectURI) //redirectURI.String())
 			w.WriteHeader(http.StatusFound)
 			return
 		} else {
