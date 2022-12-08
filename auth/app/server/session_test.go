@@ -22,3 +22,13 @@ func TestDeleteSession(t *testing.T) {
 		t.Errorf("actual:%v, expected:%v", actual, expected)
 	}
 }
+
+func TestSessionID(t *testing.T) {
+	s := NewSession("session_id")
+	sid := s.SessionID()
+	actual := len(sid)
+	expected := 44
+	if actual != expected {
+		t.Errorf("actual:%v, expected:%v", actual, expected)
+	}
+}
