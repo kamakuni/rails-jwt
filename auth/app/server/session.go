@@ -21,7 +21,7 @@ type Session struct {
 	sessionMap map[interface{}]interface{}
 }
 
-func NewSession(cookieName string) *Session {
+func NewSessionManager(cookieName string) *Session {
 	return &Session{
 		cookieName: cookieName,
 		sessionMap: map[interface{}]interface{}{},
