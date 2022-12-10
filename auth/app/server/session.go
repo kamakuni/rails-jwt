@@ -40,6 +40,11 @@ func (s *Session) Get(key interface{}) interface{} {
 	return s.sessionMap[key]
 }
 
+func (s *Session) IsAlive(key interface{}) bool {
+	_, ok := s.sessionMap[key]
+	return ok
+}
+
 func (s *Session) Delete(key interface{}) error {
 	if _, exists := s.sessionMap[key]; !exists {
 		return errors.New("session does not exist.\n")
@@ -60,6 +65,7 @@ func (s *Session) NewSession(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie(s.cookieName)
 	if err != nil || cookie.Value == "" {
 		sid := s.SessionID()
+		s.Set(sid, nil)
 		cookie := http.Cookie{Name: s.cookieName, Value: url.QueryEscape(sid), Path: "/", HttpOnly: true}
 		http.SetCookie(w, &cookie)
 	}

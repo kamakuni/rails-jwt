@@ -38,9 +38,22 @@ func TestSessionID(t *testing.T) {
 }
 
 func TestNewSession(t *testing.T) {
-	s := NewSessionManager("session_id")
+	expected := "session_id"
+	s := NewSessionManager(expected)
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		s.NewSession(w, r)
 	}))
 	defer srv.Close()
+	r := httptest.NewRequest(http.MethodGet, "/", nil)
+	w := httptest.NewRecorder()
+	srv.Config.Handler.ServeHTTP(w, r)
+	cookies := w.Result().Cookies()
+	cookie := cookies[0]
+	actual := cookie.Name
+	if actual != expected {
+		t.Errorf("actual:%v, expected:%v", actual, expected)
+	}
+	if !s.IsAlive(cookie.Value) {
+		t.Errorf("session %v is not alive", cookie.Value)
+	}
 }
