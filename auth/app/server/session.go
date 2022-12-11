@@ -65,8 +65,9 @@ func (s *Session) NewSession(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie(s.cookieName)
 	if err != nil || cookie.Value == "" {
 		sid := s.SessionID()
-		s.Set(sid, nil)
-		cookie := http.Cookie{Name: s.cookieName, Value: url.QueryEscape(sid), Path: "/", HttpOnly: true}
+		escaped := url.QueryEscape(sid)
+		s.Set(escaped, nil)
+		cookie := http.Cookie{Name: s.cookieName, Value: escaped, Path: "/", HttpOnly: true}
 		http.SetCookie(w, &cookie)
 	}
 }
