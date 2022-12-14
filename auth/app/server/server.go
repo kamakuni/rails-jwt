@@ -23,6 +23,7 @@ type Server struct {
 	*http.Server
 	client    *ent.Client
 	templates map[string]*template.Template
+	session   *Session
 }
 
 func ReadSecret(path string) (string, error) {
@@ -53,6 +54,7 @@ func CreateTemplates(tmpldir string) (map[string]*template.Template, error) {
 }
 
 func NewAuthServer(ctx context.Context, client *ent.Client, addr string, secret string) *Server {
+	session := NewSessionManager("session_id")
 	templates, _ := CreateTemplates("../template")
 	s := &Server{
 		Server: &http.Server{
@@ -60,6 +62,7 @@ func NewAuthServer(ctx context.Context, client *ent.Client, addr string, secret 
 		},
 		client:    client,
 		templates: templates,
+		session:   session,
 	}
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/v1/client", func(w http.ResponseWriter, r *http.Request) {
