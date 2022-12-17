@@ -107,7 +107,7 @@ func TestClient(t *testing.T) {
 	}
 }
 
-func TestAuthorize(t *testing.T) {
+func TestGetAuthorize(t *testing.T) {
 
 	client := enttest.Open(t, "sqlite3", "file:ent?mode=memory&cache=shared&_fk=1")
 	s.client = client
