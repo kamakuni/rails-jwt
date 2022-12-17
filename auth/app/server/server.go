@@ -16,6 +16,7 @@ import (
 
 	"auth/constant"
 	"auth/ent"
+	"auth/ent/authorizationcode"
 	"auth/ent/oauthclient"
 )
 
@@ -206,9 +207,41 @@ func NewAuthServer(ctx context.Context, client *ent.Client, addr string, secret 
 
 	})
 	mux.HandleFunc("/api/v1/token", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			http.Error(w, "", http.StatusMethodNotAllowed)
+			return
+		}
+
+		length, err := strconv.Atoi(r.Header.Get("Content-Length"))
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		body := make([]byte, length)
+		length, err = r.Body.Read(body)
+		if err != nil && err != io.EOF {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		var jsonBody map[string]interface{}
+		err = json.Unmarshal(body[:length], &jsonBody)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		clientID := jsonBody["client_id"].(string)
+		code := jsonBody["code"].(string)
+		_, err = s.client.AuthorizationCode.Query().
+			Where(authorizationcode.ClientID(clientID), authorizationcode.Code(code)).
+			Only(ctx)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusNotFound)
+			return
+		}
 		accessToken, err := CreateAccessToken("", time.Now(), secret)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
 		}
 		refreshToken, err := CreateRefreshToken()
 		if err != nil {
