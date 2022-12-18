@@ -248,16 +248,18 @@ func NewAuthServer(ctx context.Context, client *ent.Client, addr string, secret 
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		bytes, err := json.Marshal(&ResponseAuthorize{
+		buf, err := json.Marshal(&ResponseAuthorize{
 			AccessToken:  accessToken,
 			RefreshToken: refreshToken,
 		})
-		fmt.Println(bytes)
+
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		io.WriteString(w, "refresh token")
+		w.WriteHeader(http.StatusOK)
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(buf)
 	})
 	s.Handler = mux
 	return s
