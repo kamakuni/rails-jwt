@@ -147,6 +147,18 @@ func TestGetAuthorize(t *testing.T) {
 	}
 }
 
+func TestPostAuthorize(t *testing.T) {
+
+	v := url.Values{}
+	v.Add("consent", "1")
+	v.Add("redirect_uri", "http://localhost:8081/callback")
+	res, _ := http.PostForm("http://localhost:8080/api/v1/authorize")
+	if res.StatusCode != 200 {
+		t.Error("Unexpected status code.")
+	}
+
+}
+
 func TestToken(t *testing.T) {
 	res, err := http.Get("http://localhost:8080/api/v1/token")
 	if err != nil {
