@@ -152,8 +152,14 @@ func TestPostAuthorize(t *testing.T) {
 	v := url.Values{}
 	v.Add("consent", "1")
 	v.Add("redirect_uri", "http://localhost:8081/callback")
-	res, _ := http.PostForm("http://localhost:8080/api/v1/authorize")
-	if res.StatusCode != 200 {
+	httpClient := newHTTPClientWithoutRedirect()
+	req, _ := http.NewRequest(http.MethodPost, "http://localhost:8080/api/v1/authorize", strings.NewReader(v.Encode()))
+	res, _ := httpClient.Do(req)
+	l := res.Header.Get("Location")
+	if !strings.HasPrefix(l, "http://localhost:8081/callback") {
+		t.Error("Unexpected redirect uri.")
+	}
+	if res.StatusCode != 302 {
 		t.Error("Unexpected status code.")
 	}
 

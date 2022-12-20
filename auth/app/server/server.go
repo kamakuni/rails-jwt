@@ -128,7 +128,6 @@ func NewAuthServer(ctx context.Context, client *ent.Client, addr string, secret 
 		w.WriteHeader(http.StatusOK)
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(buf)
-		return
 	})
 	mux.HandleFunc("/api/v1/authorize", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {
