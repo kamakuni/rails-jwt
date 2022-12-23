@@ -154,6 +154,7 @@ func TestPostAuthorize(t *testing.T) {
 	v.Add("redirect_uri", "http://localhost:8081/callback")
 	httpClient := newHTTPClientWithoutRedirect()
 	req, _ := http.NewRequest(http.MethodPost, "http://localhost:8080/api/v1/authorize", strings.NewReader(v.Encode()))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	res, _ := httpClient.Do(req)
 	l := res.Header.Get("Location")
 	if !strings.HasPrefix(l, "http://localhost:8081/callback") {
