@@ -157,7 +157,7 @@ func TestPostAuthorize(t *testing.T) {
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	res, _ := httpClient.Do(req)
 	l := res.Header.Get("Location")
-	if !strings.HasPrefix(l, "http://localhost:8081/callback") {
+	if l == "http://localhost:8081/callback" {
 		t.Error("Unexpected redirect uri.")
 	}
 	if res.StatusCode != 302 {
