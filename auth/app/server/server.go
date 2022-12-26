@@ -230,6 +230,7 @@ func NewAuthServer(ctx context.Context, client *ent.Client, addr string, secret 
 		}
 		clientID := jsonBody["client_id"].(string)
 		code := jsonBody["code"].(string)
+		refreshToken := jsonBody["refresh_token"].(string)
 		_, err = s.client.AuthorizationCode.Query().
 			Where(authorizationcode.ClientID(clientID), authorizationcode.Code(code)).
 			Only(ctx)
