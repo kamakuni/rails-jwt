@@ -231,35 +231,57 @@ func NewAuthServer(ctx context.Context, client *ent.Client, addr string, secret 
 		clientID := jsonBody["client_id"].(string)
 		code := jsonBody["code"].(string)
 		refreshToken := jsonBody["refresh_token"].(string)
-		_, err = s.client.AuthorizationCode.Query().
-			Where(authorizationcode.ClientID(clientID), authorizationcode.Code(code)).
-			Only(ctx)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusNotFound)
+		if refreshToken != "" {
+			// TODO valid refreshToken
+			accessToken, err := CreateAccessToken("", time.Now(), secret)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			buf, err := json.Marshal(&ResponseAuthorize{
+				AccessToken:  accessToken,
+				RefreshToken: refreshToken,
+			})
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			w.WriteHeader(http.StatusOK)
+			w.Header().Set("Content-Type", "application/json")
+			w.Write(buf)
 			return
-		}
-		accessToken, err := CreateAccessToken("", time.Now(), secret)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		refreshToken, err := CreateRefreshToken()
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		buf, err := json.Marshal(&ResponseAuthorize{
-			AccessToken:  accessToken,
-			RefreshToken: refreshToken,
-		})
+		} else {
+			_, err = s.client.AuthorizationCode.Query().
+				Where(authorizationcode.ClientID(clientID), authorizationcode.Code(code)).
+				Only(ctx)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusNotFound)
+				return
+			}
+			accessToken, err := CreateAccessToken("", time.Now(), secret)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			refreshToken, err := CreateRefreshToken()
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			buf, err := json.Marshal(&ResponseAuthorize{
+				AccessToken:  accessToken,
+				RefreshToken: refreshToken,
+			})
 
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			w.WriteHeader(http.StatusOK)
+			w.Header().Set("Content-Type", "application/json")
+			w.Write(buf)
 			return
 		}
-		w.WriteHeader(http.StatusOK)
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(buf)
 	})
 	s.Handler = mux
 	return s
