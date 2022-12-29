@@ -38,5 +38,5 @@ func main() {
 	}
 	secret, _ := server.ReadSecret("../certs/private.key")
 	s := server.NewAuthServer(context.Background(), client, ":8080", secret)
-	log.Fatal(s.ListenAndServe())
+	log.Fatal(s.ListenAndServeTLS("../certs/localhost-key.pem", "../certs/localhost.pem"))
 }
