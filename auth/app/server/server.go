@@ -18,6 +18,7 @@ import (
 	"auth/ent"
 	"auth/ent/authorizationcode"
 	"auth/ent/oauthclient"
+	"auth/ent/refreshtoken"
 )
 
 type Server struct {
@@ -232,6 +233,13 @@ func NewAuthServer(ctx context.Context, client *ent.Client, addr string, secret 
 		code := jsonBody["code"].(string)
 		refreshToken := jsonBody["refresh_token"].(string)
 		if refreshToken != "" {
+			_, err := s.client.RefreshToken.Query().
+				Where(refreshtoken.Token(refreshToken)).
+				Only(ctx)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
 			// TODO valid refreshToken
 			accessToken, err := CreateAccessToken("", time.Now(), secret)
 			if err != nil {
