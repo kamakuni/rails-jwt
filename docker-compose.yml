@@ -45,9 +45,11 @@ services:
       context: ./auth/
       dockerfile: Dockerfile
     ports:
-      - 4080:8080
+      - 4080:80
+      - 4443:443
     volumes:
       - ./auth/app:/github.com/kamakuni/rails-jwt/auth/app
+    #command: bash -c "go run /github.com/kamakuni/rails-jwt/auth/app/main.go"
 
   api:
     tty: true
