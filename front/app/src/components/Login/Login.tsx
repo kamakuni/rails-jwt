@@ -65,6 +65,9 @@ const Login: React.FC = () => {
                     <div className={styles.control}>
                         <button className={styles.button} type="submit" onClick={handleClick} >Submit</button>
                     </div>
+                    <div className={styles.control}>
+                        <a className={styles.button} href="" >OAuth</a>
+                    </div>
                 </form>
             }
         </div>
