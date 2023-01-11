@@ -36,7 +36,7 @@ func main() {
 	if err := client.Schema.WriteTo(ctx, os.Stdout); err != nil {
 		log.Fatalf("error: %v", err)
 	}
-	secret, _ := server.ReadSecret("certs/private.key")
-	s := server.NewAuthServer(context.Background(), client, ":443", secret)
-	log.Fatal(s.ListenAndServeTLS("certs/localhost.pem", "certs/localhost-key.pem"))
+	secret, _ := server.ReadSecret("../certs/private.key")
+	s := server.NewAuthServer(context.Background(), client, ":8080", secret)
+	log.Fatal(s.ListenAndServe())
 }
